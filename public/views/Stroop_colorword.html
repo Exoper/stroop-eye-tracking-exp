@@ -57,7 +57,8 @@
     type: 'survey-text',  
     questions: [  
       {prompt: 'Name : ', columns: 50, name: 'firstname'},  
-      {prompt: 'Age : ', columns: 3, name: 'Age'},  
+      {prompt: 'Age : ', columns: 3, name: 'Age'},
+      {prompt: "Gender",  placeholder: ' M/F', columns:15, name:'Gender'},  
       {prompt: "Have you taken this test before?",  placeholder: 'type Yes/No', columns:15, name:'prior_practice'}  
     ],  
   };  
@@ -71,7 +72,7 @@
     // adding webgazer  
     var val = { 
     timeline: [validation], 
-    repetitions: 1 // change it back to 2 
+    repetitions: 2 // change it back to 2 
     };  
     timeline.push(survey_page1);  
     timeline.push(init_camera); 
@@ -118,13 +119,27 @@
         choices: jsPsych.ALL_KEYS 
       }
 
+    var min_divWidth = -1000
+    var max_divWidth = 1000
+    var min_divHeight = -380
+    var max_divHeight = 380
+
 
 
     var Stimulus = {  
       type: 'html-keyboard-response', 
       stimulus: function()  
       {   
-        var Stim = '<p class="stimulus" style="color:rgb'+jsPsych.timelineVariable('Color', true)+';">' +jsPsych.timelineVariable('Word', true)+'</p>'  
+        n1 = Math.floor( Math.random() * (max_divHeight-min_divHeight) + min_divHeight )
+        n2 = Math.floor( Math.random() * (max_divWidth - min_divWidth) + min_divWidth  )
+        s1 = n1.toString()
+        s2 = n2.toString()
+        //console.log(n1,n2)
+        t1 = "margin-top:"+s1+"px ; margin-left:"+s2+"px"
+        t1 = t1.toString()
+
+
+        var Stim = '<div style = "'+t1+'" ><p class="stimulus" style="color:rgb'+jsPsych.timelineVariable('Color', true)+';">' +jsPsych.timelineVariable('Word', true)+'</p>'  
         var temp = PutIntoTable('',Stim)  
         return temp;  
         //return '<p class="stimulus" style="color:rgb'+jsPsych.timelineVariable('Color', true)+';">' +jsPsych.timelineVariable('Word', true)+'</p>';   
@@ -364,7 +379,7 @@
     var n_back_set = ['Z', 'X', 'C', 'V', 'B', 'N'];  
     var sequence = [];  
     var how_many_back = 2;  
-    var sequence_length = 10; 
+    var sequence_length = 20; 
     /* Instructions */  
     var instructions_1 = {  
       type: 'html-button-response', 
@@ -396,7 +411,12 @@
       post_trial_gap: 1000  
     } 
     timeline.push(instructions_3);  
-    /* N Back sequence trials */  
+    /* N Back sequence trials */ 
+
+    var min_divWidth = -1000
+    var max_divWidth = 1000
+    var min_divHeight = -380
+    var max_divHeight = 380 
     var n_back_trial = {  
       type: 'html-keyboard-response', 
       stimulus: function() {  
@@ -415,7 +435,15 @@
           } 
         } 
         sequence.push(letter);  
-        return '<span style="font-size: 96px;">'+letter+'</span>' 
+        n1 = Math.floor( Math.random() * (max_divHeight-min_divHeight) + min_divHeight )
+        n2 = Math.floor( Math.random() * (max_divWidth - min_divWidth) + min_divWidth  )
+        s1 = n1.toString()
+        s2 = n2.toString()
+        //console.log(n1,n2)
+        t1 = "margin-top:"+s1+"px ; margin-left:"+s2+"px"
+        t1 = t1.toString()
+        return '<div style = "'+t1+'" ><span style="font-size: 96px;">'+letter+'</span></div>' 
+        //'<div style = "margin-top:100px ; margin-left:200px" ><span style="font-size: 96px;">'+letter+'</span></div>'
       },  
       choices: ['M'], 
       trial_duration: 1500, 
@@ -479,16 +507,21 @@
         } 
         return false; 
         };  
-        /*  
+      
         var myfunc = function() { 
-            jsPsych.data.get().localSave('csv','StroopColorWordMydata.csv');; 
+            jsPsych.data.get().localSave('csv','StroopColorWordMydata.csv');
+            jsPsych.extensions["webgazer"].pause();
+            jsPsych.extensions["webgazer"].hidePredictions();
+            jsPsych.data.displayData();
+            mediaRecorder.stop();
+            console.log(mediaRecorder.state);
         } 
         var data_save = { 
             type: 'call-function',  
             func: myfunc  
         } 
         timeline.push(data_save)  
-        */  
+        
         var trial = { 
         type:'external-html', 
         url: "http://127.0.0.1:8080/feedback.html", 
@@ -497,7 +530,7 @@
         };  
           
         timeline.push(thank_you); 
-        //timeline.push(trial)  
+        timeline.push(trial)  
 
 
 
@@ -512,12 +545,12 @@
           console.log(JSON.stringify(data)) 
         },  
         on_finish: function() { 
-          jsPsych.data.get().localSave('csv','StroopColorWordMydata.csv');  
-          jsPsych.extensions["webgazer"].pause(); 
-          jsPsych.extensions["webgazer"].hidePredictions(); 
-          jsPsych.data.displayData(); 
-          mediaRecorder.stop(); 
-          console.log(mediaRecorder.state); 
+          // jsPsych.data.get().localSave('csv','StroopColorWordMydata.csv');  
+          // jsPsych.extensions["webgazer"].pause(); 
+          // jsPsych.extensions["webgazer"].hidePredictions(); 
+          // jsPsych.data.displayData(); 
+          // mediaRecorder.stop(); 
+          // console.log(mediaRecorder.state); 
         } 
     }); 
   }); 
