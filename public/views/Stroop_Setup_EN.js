@@ -2,7 +2,7 @@ var FullScreenMode = false;
 var TextFontSize = "30px";
 var StimulusFontSize = '60px';
 
-var keyboard_path = "./assets/images/StroopColorsKeyboard.png"
+var keyboard_path = "../../assets/images/StroopColorsKeyboard.png"
 
 var ColorInstrText = [
       '<p style="font-size:'+TextFontSize+'">Welcome to the Stroop Color experiment.</p>',
