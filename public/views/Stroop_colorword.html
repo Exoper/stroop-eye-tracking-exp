@@ -61,7 +61,14 @@
       {prompt: "Gender",  placeholder: ' M/F', columns:15, name:'Gender'},  
       {prompt: "Have you taken this test before?",  placeholder: 'type Yes/No', columns:15, name:'prior_practice'}  
     ],  
-  };  
+  }; 
+    var instructions_cal = {  
+      type: 'html-button-response', 
+      stimulus: '<div style="width: 800px;">'+  
+        '<p>Now we will calibrate the web gazer. On the next screen you will see a sequence of black dots. Keep your head steady and look at each dot for atleast 3-5 seconds, then click the dot.</p>'+  
+        '</div>', 
+      choices: ["Continue"] 
+    } 
     
   var subject_id = jsPsych.randomization.randomID(15);  
   subject_id = subject_id.toString() + survey_page1.firstname;  
@@ -75,7 +82,8 @@
     repetitions: 2 // change it back to 2 
     };  
     timeline.push(survey_page1);  
-    timeline.push(init_camera); 
+    timeline.push(init_camera);
+    timeline.push(instructions_cal);
     timeline.push(val); 
     // Make experiment run in full screen mode  
     // Note, that the fullscreen plugin needs to imported above 
