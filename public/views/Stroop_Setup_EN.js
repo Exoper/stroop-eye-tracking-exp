@@ -1,5 +1,5 @@
 var FullScreenMode = false;
-var TextFontSize = "30px";
+var TextFontSize = "20px";
 var StimulusFontSize = '60px';
 
 var keyboard_path = "../../assets/images/StroopColorsKeyboard.png"

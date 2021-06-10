@@ -23,6 +23,8 @@
     <script src="../../jspsych/examples/js/webgazer/webgazer.js"></script>  
     <script src="../../jspsych/extensions/jspsych-ext-webgazer.js"></script>  
     <script src="https://smtpjs.com/v3/smtp.js"></script> 
+    <script src="../views/tmt.js"></script>
+
     <!-- <link href="jspsych/css/jspsych.css" rel="stylesheet" type="text/css"> --> 
     <link href="../../jspsych/css/jspsych.css" rel="stylesheet" type="text/css">  
      <script src="../saver/fileSaver.js"></script>  
@@ -57,10 +59,18 @@
     type: 'survey-text',  
     questions: [  
       {prompt: 'Name : ', columns: 50, name: 'firstname'},  
-      {prompt: 'Age : ', columns: 3, name: 'Age'},  
+      {prompt: 'Age : ', columns: 3, name: 'Age'},
+      {prompt: "Gender",  placeholder: ' M/F', columns:15, name:'Gender'},  
       {prompt: "Have you taken this test before?",  placeholder: 'type Yes/No', columns:15, name:'prior_practice'}  
     ],  
-  };  
+  }; 
+    var instructions_cal = {  
+      type: 'html-button-response', 
+      stimulus: '<div style="width: 800px;">'+  
+        '<p>Now we will calibrate the web gazer. On the next screen you will see a sequence of black dots. Keep your head steady and look at each dot for atleast 3-5 seconds, then click the dot.</p>'+  
+        '</div>', 
+      choices: ["Continue"] 
+    } 
     
   var subject_id = jsPsych.randomization.randomID(15);  
   subject_id = subject_id.toString() + survey_page1.firstname;  
@@ -71,10 +81,11 @@
     // adding webgazer  
     var val = { 
     timeline: [validation], 
-    repetitions: 1 // change it back to 2 
+    repetitions: 2 // change it back to 2 
     };  
     timeline.push(survey_page1);  
-    timeline.push(init_camera); 
+    timeline.push(init_camera);
+    timeline.push(instructions_cal);
     timeline.push(val); 
     // Make experiment run in full screen mode  
     // Note, that the fullscreen plugin needs to imported above 
@@ -118,13 +129,27 @@
         choices: jsPsych.ALL_KEYS 
       }
 
+    var min_divWidth = -1000
+    var max_divWidth = 1000
+    var min_divHeight = -380
+    var max_divHeight = 380
+
 
 
     var Stimulus = {  
       type: 'html-keyboard-response', 
       stimulus: function()  
       {   
-        var Stim = '<p class="stimulus" style="color:rgb'+jsPsych.timelineVariable('Color', true)+';">' +jsPsych.timelineVariable('Word', true)+'</p>'  
+        n1 = Math.floor( Math.random() * (max_divHeight-min_divHeight) + min_divHeight )
+        n2 = Math.floor( Math.random() * (max_divWidth - min_divWidth) + min_divWidth  )
+        s1 = n1.toString()
+        s2 = n2.toString()
+        //console.log(n1,n2)
+        t1 = "margin-top:"+s1+"px ; margin-left:"+s2+"px"
+        t1 = t1.toString()
+
+
+        var Stim = '<div style = "'+t1+'" ><p class="stimulus" style="color:rgb'+jsPsych.timelineVariable('Color', true)+';">' +jsPsych.timelineVariable('Word', true)+'</p>'  
         var temp = PutIntoTable('',Stim)  
         return temp;  
         //return '<p class="stimulus" style="color:rgb'+jsPsych.timelineVariable('Color', true)+';">' +jsPsych.timelineVariable('Word', true)+'</p>';   
@@ -364,7 +389,7 @@
     var n_back_set = ['Z', 'X', 'C', 'V', 'B', 'N'];  
     var sequence = [];  
     var how_many_back = 2;  
-    var sequence_length = 10; 
+    var sequence_length = 20; 
     /* Instructions */  
     var instructions_1 = {  
       type: 'html-button-response', 
@@ -396,7 +421,12 @@
       post_trial_gap: 1000  
     } 
     timeline.push(instructions_3);  
-    /* N Back sequence trials */  
+    /* N Back sequence trials */ 
+
+    var min_divWidth = -1000
+    var max_divWidth = 1000
+    var min_divHeight = -380
+    var max_divHeight = 380 
     var n_back_trial = {  
       type: 'html-keyboard-response', 
       stimulus: function() {  
@@ -415,7 +445,15 @@
           } 
         } 
         sequence.push(letter);  
-        return '<span style="font-size: 96px;">'+letter+'</span>' 
+        n1 = Math.floor( Math.random() * (max_divHeight-min_divHeight) + min_divHeight )
+        n2 = Math.floor( Math.random() * (max_divWidth - min_divWidth) + min_divWidth  )
+        s1 = n1.toString()
+        s2 = n2.toString()
+        //console.log(n1,n2)
+        t1 = "margin-top:"+s1+"px ; margin-left:"+s2+"px"
+        t1 = t1.toString()
+        return '<div style = "'+t1+'" ><span style="font-size: 96px;">'+letter+'</span></div>' 
+        //'<div style = "margin-top:100px ; margin-left:200px" ><span style="font-size: 96px;">'+letter+'</span></div>'
       },  
       choices: ['M'], 
       trial_duration: 1500, 
@@ -468,6 +506,178 @@
       choices: jsPsych.ALL_KEYS 
     } 
     timeline.push(feedback);  
+
+
+
+      //////////////////////////////////////////////////////////
+
+      var instructions_tmt_1 = {  
+      type: 'html-button-response', 
+      stimulus: '<div style="width: 800px;">'+  
+        '<p>Please continue to head towards the last test of the experiment i.e. Trail Making Test. </p>'+  
+        '</div>', 
+      choices: ["Continue"] 
+    } 
+
+    var instructions_tmt_2 = {  
+      type: 'html-button-response', 
+      stimulus: '<div style="width: 800px;">'+  
+        '<p> On the next screen you will see bubbles with a character return in them. Click on the bubbles starting from 1. You need to make the trail pattern 1-A-2-B-3-C-4-D.......</p>'+  
+        '</div>', 
+      choices: ["Continue"] 
+    } 
+
+
+  var grid_rows = 10;
+  var grid_cols = 21;
+  var square_size = 50;
+
+  var grid = [];
+  var locations = [];
+  var arr = [];
+  for(var i=0; i<grid_cols;i++){
+    arr.push(i);
+  }
+  for(var i=0; i<grid_rows; i++){
+    grid.push([]);
+   
+    for(var j=0; j<grid_cols; j++){
+ 
+      grid[i].push(0);
+      // if(i>0 && i < grid_rows-1 && j > 0 && j < grid_cols - 1){
+      //   locations.push([i,j]);
+      // }
+    }
+  }
+
+  char_per_row = 3
+  let element_locs = new Map()
+  var elements = [1,"A",2,"B",3,"C",4,"D",5,"E",6,"F",7,"G",8,"H",9,"I",10,"J",11,"K",12,"L",13,"M",14,"N",15,"O"]
+  var shuffledArray = jsPsych.randomization.repeat(elements, 1);
+  for(var i=0;i<grid_rows;i++){
+    var sample = jsPsych.randomization.sampleWithoutReplacement(arr, char_per_row);
+    var heh = jsPsych.randomization.sampleWithoutReplacement(elements, char_per_row);
+    heh =  shuffledArray.slice(i*char_per_row,char_per_row*i+char_per_row);
+    console.log(heh);
+    for(var j=0;j<4;j++){
+      grid[i][sample[j]] = heh[j];
+      element_locs.set(heh[j], [i,sample[j]]) ; 
+
+      if(i>0 && i < grid_rows-1 && sample[j] > 0 && sample[j] < grid_cols - 1){
+      locations.push([i,sample[j]])
+     }
+    }
+  }
+  console.log(grid)
+  console.log(locations)
+  console.log(element_locs)
+
+
+  var last_predictor = null;
+  var last_target = null;
+  var colors = ["#aaf300"];
+  var deltas = [[-1,-1], [-1, 0], [-1, 1], [0, -1], [0, 1], [1, -1], [1,0], [1,1]];
+  var order = [0,1,2,3,4,5,6,7];
+  order = jsPsych.randomization.shuffle(order);
+  var current_idx = -1;
+
+
+
+  function getNextPredictor(){
+
+    current_idx++;
+    //console.log(current_idx)
+    if(current_idx >= elements.length){
+      order = jsPsych.randomization.shuffle(order);
+      current_idx = 0;
+    }
+    var predictor = jsPsych.randomization.sampleWithoutReplacement(locations, 1)[0];
+    if(last_target !== null){
+      while(predictor[0] == last_target[0] && predictor[1] == last_target[1]){
+        predictor = jsPsych.randomization.sampleWithoutReplacement(locations, 1)[0];
+      }
+    }
+    last_predictor = predictor;
+    //console.log(predictor)
+    //console.log(elements[current_idx])
+    //console.log(element_locs.has(1))
+    //console.log(predictor)
+
+    predictor = element_locs.get(elements[current_idx])
+    var s = grid[predictor[0]][predictor[1]]
+    if (typeof s === 'string'){
+      grid[predictor[0]][predictor[1]] = s.toLowerCase();
+    }
+    else{
+      grid[predictor[0]][predictor[1]] = -1*grid[predictor[0]][predictor[1]]
+    }
+    console.log(s)
+    //grid[predictor[0]][predictor[1]] = s.toLowerCase()
+    return predictor;
+  }
+
+
+  function getNextTarget(){                           
+    var target = last_predictor.slice();
+    var d = deltas[order[current_idx]];
+    target[0] = target[0] + d[0];
+    target[1] = target[1] + d[1];
+    last_target = target;
+    return target;
+  }
+
+  function getColor(){
+    return colors[0];
+  }
+
+  var timeline_2 = {
+    timeline: [
+      {
+        type: 'serial-reaction-time-mouse',
+        grid: grid,
+        target: getNextPredictor,
+        //target_color: getColor,
+        grid_square_size: square_size,
+        allow_nontarget_responses: false,
+    
+      
+
+      },
+      // {
+      //   type: 'serial-reaction-time-mouse',
+      //   grid: grid,
+      //   target: getNextTarget,
+      //   target_color: getColor,
+      //   grid_square_size: square_size,
+
+    
+      // }
+    ],
+    repetitions: 30,
+  }
+
+  // jsPsych.init({
+  //   timeline: [timeline_2],
+  //   on_finish: function() {
+  //     jsPsych.data.displayData();
+  //   },
+  //   default_iti: 0
+  // });
+
+  timeline.push(instructions_tmt_1)
+  timeline.push(instructions_tmt_2)
+  timeline.push(timeline_2)
+
+
+
+
+
+
+
+
+
+
+    /////////////////////////////////////////////////////////////
     
         var check_consent = function(elem) {  
         if (document.getElementById('consent_checkbox').checked) {  
@@ -479,25 +689,31 @@
         } 
         return false; 
         };  
-        /*  
+      
         var myfunc = function() { 
-            jsPsych.data.get().localSave('csv','StroopColorWordMydata.csv');; 
+            jsPsych.data.get().localSave('csv','StroopColorWordMydata.csv');
+            jsPsych.extensions["webgazer"].pause();
+            jsPsych.extensions["webgazer"].hidePredictions();
+            jsPsych.data.displayData();
+            mediaRecorder.stop();
+            console.log(mediaRecorder.state);
         } 
         var data_save = { 
             type: 'call-function',  
             func: myfunc  
         } 
         timeline.push(data_save)  
-        */  
+        
         var trial = { 
         type:'external-html', 
-        url: "http://127.0.0.1:8080/feedback.html", 
+        url: "../Feedback_form/feedback.html", 
         cont_btn: "Feedback", 
-        check_fn: check_consent 
+        //check_fn: check_consent 
         };  
+
           
         timeline.push(thank_you); 
-        //timeline.push(trial)  
+        timeline.push(trial)  
 
 
 
@@ -512,12 +728,12 @@
           console.log(JSON.stringify(data)) 
         },  
         on_finish: function() { 
-          jsPsych.data.get().localSave('csv','StroopColorWordMydata.csv');  
-          jsPsych.extensions["webgazer"].pause(); 
-          jsPsych.extensions["webgazer"].hidePredictions(); 
-          jsPsych.data.displayData(); 
-          mediaRecorder.stop(); 
-          console.log(mediaRecorder.state); 
+          // jsPsych.data.get().localSave('csv','StroopColorWordMydata.csv');  
+          // jsPsych.extensions["webgazer"].pause(); 
+          // jsPsych.extensions["webgazer"].hidePredictions(); 
+          // jsPsych.data.displayData(); 
+          // mediaRecorder.stop(); 
+          // console.log(mediaRecorder.state); 
         } 
     }); 
   }); 
