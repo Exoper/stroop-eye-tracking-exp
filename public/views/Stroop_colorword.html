@@ -83,10 +83,10 @@
     timeline: [validation], 
     repetitions: 2 // change it back to 2 
     };  
-//     timeline.push(survey_page1);  
-//     timeline.push(init_camera);
-//     timeline.push(instructions_cal);
-//     timeline.push(val); 
+    timeline.push(survey_page1);  
+    timeline.push(init_camera);
+    timeline.push(instructions_cal);
+    timeline.push(val); 
     // Make experiment run in full screen mode  
     // Note, that the fullscreen plugin needs to imported above 
     timeline.push({ 
@@ -281,20 +281,20 @@
         } 
       } 
     } 
-//     timeline.push(ColorWordInstr);  
-//     // run the practice trials  
-//     timeline.push(practice_procedure);  
-//     // provide feedback as to their performance 
-//     timeline.push(debrief); 
-//     // decide if the person did well enough 
-//     timeline.push(if_node); 
-//     // decide if the person did well enough 
-//     timeline.push(if_node); 
-//     // Present test instructions  
-//     timeline.push(ColorWordTestInstr);  
-//     // run the test 
-//     timeline.push(test_procedure);  
-//     timeline.push(stroop_end); 
+    timeline.push(ColorWordInstr);  
+    // run the practice trials  
+    timeline.push(practice_procedure);  
+    // provide feedback as to their performance 
+    timeline.push(debrief); 
+    // decide if the person did well enough 
+    timeline.push(if_node); 
+    // decide if the person did well enough 
+    timeline.push(if_node); 
+    // Present test instructions  
+    timeline.push(ColorWordTestInstr);  
+    // run the test 
+    timeline.push(test_procedure);  
+    timeline.push(stroop_end); 
 
 
     
@@ -485,7 +485,7 @@
         weights: [1, 2] 
       } 
     } 
-    //timeline.push(n_back_sequence); 
+    timeline.push(n_back_sequence); 
     /* feedback */  
     var feedback = {  
       type: 'html-keyboard-response', 
