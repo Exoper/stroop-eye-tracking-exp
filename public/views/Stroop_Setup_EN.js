@@ -2,7 +2,7 @@ var FullScreenMode = false;
 var TextFontSize = "20px";
 var StimulusFontSize = '60px';
 
-var keyboard_path = "../../assets/images/StroopColorsKeyboard.png"
+var keyboard_path = "../../assets/images/st_instructions.png"
 
 var ColorInstrText = [
       '<p style="font-size:'+TextFontSize+'">Welcome to the Stroop Color experiment.</p>',
@@ -15,7 +15,7 @@ var ColorTestInstrText = ['<p style="font-size:'+TextFontSize+'">You will now re
 
 var WordInstrText = [
    '<p style="font-size:'+TextFontSize+'">Welcome to the Stroop Word experiment.</p>',
-   '<p style="font-size:'+TextFontSize+'">In this task, words will appear in the center of the screen, like   this:</p><p style="font-size:'+TextFontSize+'">BLUE</p><p style="font-size:'+TextFontSize+'">You need to indicate what word is written. </br>Press the key that corresponds to that color, as shown in the figure. This figure will be present during the entire experiment.</p><img src="' + keyboard_path + '"></img>',
+   '<p style="font-size:'+TextFontSize+'">In this task, words will appear in the center of the screen, like   this:</p><p style="font-size:'+TextFontSize+'">BLUE</p><p style="font-size:'+TextFontSize+'">You need to indicate what word is written. </br>Press the key that corresponds to that color, as shown in the figure. This figure will be present during the entire experiment.</p><img src="' + keyboard_path + 'width="100"'+ '"></img>',
    '<p style="font-size:'+TextFontSize+'">Before doing the actual experiment you will complete some practice trials. These will give you feedback about your accuracy. <p style="font-size:'+TextFontSize+'">Remember to respond as accurately and quickly as possible.</p>'];
    
 var WordInstrPoorPerformanceText = ['<p style="font-size:'+TextFontSize+'">There will be another run of practice trials with feedback.</p> <p style="font-size:'+TextFontSize+'">Remember to respond as accurately and quickly as possible.</p>'];
@@ -24,12 +24,12 @@ var WordTestInstrText = ['<p style="font-size:'+TextFontSize+'">Now you will do 
     
 var ColorWordInstrText = [
       '<p style="font-size:'+TextFontSize+'">Welcome to the Stroop Color/Word experiment.</p>',
-      '<p style="font-size:'+TextFontSize+'">In this task, words will appear in the center of the screen. You need to indicate the COLOR that the word is written in (and ignore what the word says). Press the key that corresponds to that color, as shown in the figure. This figure will be present during the entire experiment.</p><img src="' + keyboard_path + '"></img>',
+      '<p style="font-size:'+TextFontSize+'">In this task, words will appear in the center of the screen. You need to indicate the COLOR that the word is written in (and ignore what the word says). Press the key that corresponds to that color, as shown in the figure. This figure will be present during the entire experiment.</p><img src="' + keyboard_path + '"width= "500"></img>',
       '<p style="font-size:'+TextFontSize+'">Before doing the actual experiment you will complete some practice trials. These will give you feedback about your accuracy. <p style="font-size:'+TextFontSize+'">Remember to respond as accurately and quickly as possible.</p>'];
 
 var ColorWordInstrPoorPerformanceText = ['<p style="font-size:'+TextFontSize+'">There will be another run of practice trials with feedback.</p> <p style="font-size:'+TextFontSize+'">Remember to respond as accurately and quickly as possible.</p>'];
 
-var ColorWordTestInstrText = ['<p style="font-size:'+TextFontSize+'">You will now respond without any feedback. Try to respond as quickly and accurately as possible. </p>'];
+var ColorWordTestInstrText = ['<p style="font-size:'+TextFontSize+'">Moving to the actual test. The stimulus need not be in the centre and you will now respond without any feedback. Try to respond as quickly and accurately as possible. </p>'];
 
 var ColorThankYouText = 'Thank you. Press any key to end the experiment.'
 
@@ -39,7 +39,7 @@ var ColorWordThankYouText = 'Thank you. Press any key to end the experiment.'
 
 /* If the response choice get modified here they also need to be modified below
 */
-var ResponseChoices = ['v','b','n','m','Escape']
+var ResponseChoices = ['ArrowLeft','ArrowRight','ArrowDown','Escape']
 
 var FeedbackLength = 400; // This is in milliseconds
 
@@ -63,10 +63,14 @@ var ColorWordTestRepeats = 4
 	If the instruction keyboard mapping figure is too low change the 'height' value below.
 */
 
-function PutIntoTable(top='top', middle='mid', width=600, height=300, img_path=keyboard_path) {
+var Small_img_path = "../../assets/images/on_trial.png"
+
+
+function PutIntoTable(top='top', middle='mid', width=600, height=250, img_path=Small_img_path) {
    return '<table border="0" width="'+width+'"><tr height="'+height+'"><td>'+top+'</td></tr><tr height="'+height+'">'+
           '<td><div style="font-size:60px;">'+middle+'</div></td></tr><tr height="'+height+'">'+
-          '<td valign="bottom"><img src="'+ keyboard_path +'"></td></tr></table>';
+          '<td valign="bottom"><img src="'+ Small_img_path +'" width = "500"></td></tr></table>';
+         
  }
 /* ========================================================= 
 	This is the stimuli list for both stroop color and word
@@ -76,22 +80,22 @@ function PutIntoTable(top='top', middle='mid', width=600, height=300, img_path=k
 var StroopWordList = [
    {
       "Word": "Red",
-      "letter": 'v',
+      "letter": 'ArrowLeft',
       "Color": "(255,0,0)"
     },
-    {
-      "Word": "Yellow",
-      "letter": 'b',
-      "Color": "(255,255,0)"
-    },
+    // {
+    //   "Word": "Yellow",
+    //   "letter": 'b',
+    //   "Color": "(255,255,0)"
+    // },
     {
       "Word": "Green",
-      "letter": 'n',
+      "letter": 'ArrowDown',
       "Color": "(0,255,0)"
     },
     {
       "Word": "Blue",
-      "letter": 'm',
+      "letter": 'ArrowRight',
       "Color": "(0,0,255)"
     }
 ]
@@ -103,97 +107,97 @@ var StroopColorWordList = [
  {
    Word: "Red",
    Congruency: "Con",
-   letter: 'v',
+   letter: 'ArrowLeft',
    Color: "(255,0,0)"
+ },
+ // {
+ //   Word: "Red",
+ //   Congruency: "Incon",
+ //   letter: 'b',
+ //   Color: "(255,255,0)"
+ // },
+ {
+   Word: "Red",
+   Congruency: "Incon",
+   letter: 'ArrowRight',
+   Color: "(0,0,255)"
  },
  {
    Word: "Red",
    Congruency: "Incon",
-   letter: 'b',
-   Color: "(255,255,0)"
- },
- {
-   Word: "Red",
-   Congruency: "Incon",
-   letter: 'm',
-   Color: "(0,0,255)"
- },
- {
-   Word: "Red",
-   Congruency: "Incon",
-   letter: 'n',
+   letter: 'ArrowDown',
    Color: "(0,255,0)"
  },
- {
-   Word: "Yellow",
-   Congruency: "Incon",
-   letter: 'v',
-   Color: "(255,0,0)"
- },
- {
-   Word: "Yellow",
-   Congruency: "Con",
-   letter: 'b',
-   Color: "(255,255,0)"
- },
- {
-   Word: "Yellow",
-   Congruency: "Incon",
-   letter: 'm',
-   Color: "(0,0,255)"
- },
- {
-   Word: "Yellow",
-   Congruency: "Incon",
-   letter: 'n',
-   Color: "(0,255,0)"
- },
+ // {
+ //   Word: "Yellow",
+ //   Congruency: "Incon",
+ //   letter: 'ArrowLeft',
+ //   Color: "(255,0,0)"
+ // },
+ // {
+ //   Word: "Yellow",
+ //   Congruency: "Con",
+ //   letter: 'b',
+ //   Color: "(255,255,0)"
+ // },
+ // {
+ //   Word: "Yellow",
+ //   Congruency: "Incon",
+ //   letter: 'm',
+ //   Color: "(0,0,255)"
+ // },
+ // {
+ //   Word: "Yellow",
+ //   Congruency: "Incon",
+ //   letter: 'n',
+ //   Color: "(0,255,0)"
+ // },
  {
    Word: "Blue",
    Congruency: "Incon",
-   letter: 'v',
+   letter: 'ArrowLeft',
    Color: "(255,0,0)"
  },
- {
-   Word: "Blue",
-   Congruency: "Incon",
-   letter: 'b',
-   Color: "(255,255,0)"
- },
+ // {
+ //   Word: "Blue",
+ //   Congruency: "Incon",
+ //   letter: 'b',
+ //   Color: "(255,255,0)"
+ // },
  {
    Word: "Blue",
    Congruency: "Con",
-   letter: 'm',
+   letter: 'ArrowRight',
    Color: "(0,0,255)"
  },
  {
    Word: "Blue",
    Congruency: "Incon",
-   letter: 'n',
+   letter: 'ArrowDown',
    Color: "(0,255,0)"
  },
  {
    Word: "Green",
    Congruency: "Incon",
-   letter: 'v',
+   letter: 'ArrowLeft',
    Color: "(255,0,0)"
  },
+ // {
+ //   Word: "Green",
+ //   Congruency: "Incon",
+ //   letter: 'b',
+ //   Color: "(255,255,0)"
+ // },
  {
    Word: "Green",
    Congruency: "Incon",
-   letter: 'b',
-   Color: "(255,255,0)"
- },
- {
-   Word: "Green",
-   Congruency: "Incon",
-   letter: 'm',
+   letter: 'ArrowRight',
    Color: "(0,0,255)"
  },
  {
    Word: "Green",
    Congruency: "Con",
-   letter: 'n',
+   letter: 'ArrowDown',
    Color: "(0,255,0)"
  }
 ]
