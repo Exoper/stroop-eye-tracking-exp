@@ -149,12 +149,12 @@
         t1 = t1.toString()
 
 
-        var Stim = '<div style = "'+t1+'" ><p class="stimulus" style="color:rgb'+jsPsych.timelineVariable('Color', true)+';">' +jsPsych.timelineVariable('Word', true)+'</p>'  
-        var temp = PutIntoTable('',Stim)  
-        return temp;  
+        var Stim = '<div style = "'+t1+'" ><p class="stimulus" style="color:rgb'+jsPsych.timelineVariable('Color', true)+';font-size:50px;">' +jsPsych.timelineVariable('Word', true)+'</p>'  
+        //var temp = PutIntoTable('',Stim)  
+        return Stim;  
         //return '<p class="stimulus" style="color:rgb'+jsPsych.timelineVariable('Color', true)+';">' +jsPsych.timelineVariable('Word', true)+'</p>';   
       },  
-      choices: ['v','b','n','m'], 
+      choices: ['ArrowLeft','ArrowDown','ArrowRight'], 
       post_trial_gap: 0,  
       extensions: [ 
           { 
@@ -179,7 +179,40 @@
         data.correct = jsPsych.pluginAPI.compareKeys(data.response, data.letter); 
       } 
     } 
-    var prac_stimulus = Object.assign({}, Stimulus) 
+
+
+
+
+    // New stationary Stimulus for practice trials
+
+    var prac_Stimulus = {  
+      type: 'html-keyboard-response', 
+      stimulus: function()  
+      {   
+        var Stim =  '<p class="stimulus" style="color:rgb'+jsPsych.timelineVariable('Color', true)+';">' +jsPsych.timelineVariable('Word', true)+'</p>';   
+        var temp = PutIntoTable('',Stim)  
+        return temp;  
+      },  
+      choices: ['ArrowLeft','ArrowDown','ArrowRight'], 
+      post_trial_gap: 0,  
+      extensions: [ 
+          { 
+            type: "webgazer", 
+            params: { 
+              targets: ["#jspsych-html-keyboard-response-stimulus"],  
+            },  
+          },  
+        ],  
+ 
+      on_finish: function(data){  
+        var correct_response = data.letter; 
+        console.log(data.response, data.letter);  
+        data.correct = jsPsych.pluginAPI.compareKeys(data.response, data.letter); 
+      } 
+    } 
+
+    var prac_stimulus = Object.assign({}, prac_Stimulus) 
+   
     prac_stimulus = Object.assign(prac_stimulus, {      
       data: { 
         Congruency: jsPsych.timelineVariable('Congruency'), 
@@ -195,6 +228,24 @@
         type: 'test trial'  
       } 
     })  
+
+    // Without image fixation
+
+    var test_fixation = {  
+      type: 'html-keyboard-response', 
+      stimulus: function(){ 
+        return '<div style="font-size:60px;">+</div><p><p>' ; 
+      },  
+        
+        
+      choices: jsPsych.NO_KEYS, 
+      trial_duration: function(){ 
+          return jsPsych.randomization.sampleWithoutReplacement([250, 500, 750, 1000, 1250, 1500, 1750, 2000], 1)[0]; 
+        },  
+      data: {type: 'fixation'}  
+    } 
+
+
     var fixation = {  
       type: 'html-keyboard-response', 
       stimulus: function(){ 
@@ -240,7 +291,7 @@
     } 
     // Define the test procedure which does NOT provide feedback  
     var test_procedure = {  
-      timeline: [fixation, test_stimulus],  
+      timeline: [test_fixation, test_stimulus],  
       timeline_variables: StroopColorWordList,  
       sample: { 
         type: 'fixed-repetitions',  
