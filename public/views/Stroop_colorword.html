@@ -83,19 +83,23 @@
     // adding webgazer  
     var val = { 
     timeline: [validation], 
-    repetitions: 1 // change it back to 2 
+    repetitions: 2 // change it back to 2 
     };  
-    timeline.push(survey_page1);  
+
+    // timeline.push(preload);
+    timeline.push(survey_page1); 
+
     timeline.push(init_camera);
+    timeline.push({ 
+      type: 'fullscreen', 
+      fullscreen_mode: true,  
+    });  
     timeline.push(instructions_cal);
     timeline.push(val);
     //timeline.push(preload);
     // Make experiment run in full screen mode  
     // Note, that the fullscreen plugin needs to imported above 
-    timeline.push({ 
-      type: 'fullscreen', 
-      fullscreen_mode: true,  
-    }); 
+    
       
     var preload = {
     type: 'preload',
@@ -443,8 +447,7 @@
 
 ////////////////////////////////////////////////////////////////////////////  
 ////////////////////////////////////////////////////////////////////////////  
-          
-            
+       
         //timeline.push(trial)  
             
     var n_back_set = ['Z', 'X', 'C', 'V', 'B', 'N'];  
@@ -880,7 +883,7 @@
     //jatos.onLoad(function() { 
     jsPsych.init({  
         //experiment_width: 600,  
-        timeline: timeline,
+        timeline: timeline, 
         show_progress_bar: true,
         extensions: [{ type: "webgazer" ,params: {round_predictions:false}}], 
         on_interaction_data_update: function(data) {  
