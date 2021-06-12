@@ -880,7 +880,8 @@
     //jatos.onLoad(function() { 
     jsPsych.init({  
         //experiment_width: 600,  
-        timeline: timeline, 
+        timeline: timeline,
+        show_progress_bar: true,
         extensions: [{ type: "webgazer" ,params: {round_predictions:false}}], 
         on_interaction_data_update: function(data) {  
           console.log(JSON.stringify(data)) 
