@@ -1,4 +1,4 @@
-  <!DOCTYPE html> 
+ <!DOCTYPE html> 
 <html>  
   <head>  
     <meta charset="UTF-8">  
@@ -68,7 +68,8 @@
     var instructions_cal = {  
       type: 'html-button-response', 
       stimulus: '<div style="width: 800px;">'+  
-        '<p>Now we will calibrate the web gazer. On the next screen you will see a sequence of black dots. Keep your head steady and look at each dot for atleast 3-5 seconds, then click the dot.</p>'+  
+        '<p>Now we will calibrate the web gazer. On the next screen you will see a sequence of black dots.</p>'+
+        '<p> Keep your head steady and look at each dot for atleast 3-5 seconds, then click the dot.</p>'+  
         '</div>', 
       choices: ["Continue"] 
     } 
@@ -448,7 +449,9 @@
             
     var n_back_set = ['Z', 'X', 'C', 'V', 'B', 'N'];  
     var sequence = [];  
-    var how_many_back = 2;  
+    var prac_sequence = [] ;
+    var how_many_back = 1;  
+    var prac_sequence_length = 10 ;
     var sequence_length = 20; 
     /* Instructions */  
     var instructions_1 = {  
@@ -462,10 +465,10 @@
     var instructions_2 = {  
       type: 'html-button-response', 
       stimulus: '<div style="width: 800px;">'+  
-        '<p>You will see a sequence of letters presented one at a time. Your task is to determine if the letter on the screen matches '+  
-        'the letter that appeared two letters before.</p>'+ 
+        '<p>You will see a sequence of letters presented one at a time. Your task is to determine if the letter on the screen is '+  
+        'the same that appeared on the last screen.</p>'+ 
         '<p>If the letter is match <span style="font-weight: bold;">press the M key.</span></p>'+ 
-        '<p>For example, if you saw the sequence X, C, V, B, V, X you would press the M key when the second V appeared on the screen.</p>'+ 
+        '<p>For example, if you saw the sequence X, C, C, B, B, X you would press the M key when the second C appeared and similarly when the second B appeared on the screen.</p>'+ 
         '<p>You do not need to press any key when there is not a match.</p>'+ 
         '</div>', 
       choices: ["Continue"] 
@@ -475,12 +478,107 @@
       type: 'html-button-response', 
       stimulus: '<div style="width: 800px;">'+  
         '<p>The sequence will begin on the next screen.</p>'+ 
-        '<p>Remember: press the M key if the letter on the screen matches the letter that appeared two letters ago.</p>'+ 
+        '<p>This is a practice trial. Lets see how focused you are.</p>'+ 
+        '<p>Remember: press the M key if a letter appears on simultaneous screens.</p>'+ 
         '</div>', 
       choices: ["I'm ready to start!"], 
       post_trial_gap: 1000  
     } 
     timeline.push(instructions_3);  
+
+
+
+   
+
+
+
+    // Setting up the practice sequence
+
+     var prac_n_back_trial = {  
+      type: 'html-keyboard-response', 
+      stimulus: function() {  
+        if(prac_sequence.length < how_many_back){  
+          var letter = jsPsych.randomization.sampleWithoutReplacement(n_back_set, 1)[0] 
+        } else {  
+          if(jsPsych.timelineVariable('match', true) == true){  
+            var letter = prac_sequence[prac_sequence.length - how_many_back]; 
+          } else {  
+            var possible_letters = jsPsych.randomization.sampleWithoutReplacement(n_back_set, 2); 
+            if(possible_letters[0] != prac_sequence[prac_sequence.length - how_many_back]){ 
+              var letter = possible_letters[0]; 
+            } else {  
+              var letter = possible_letters[1]; 
+            } 
+          } 
+        } 
+        prac_sequence.push(letter);  
+        
+        return '<div style = "centre" ><span style="font-size: 96px;">'+letter+'</span></div>'
+        //'<div style = "margin-top:100px ; margin-left:200px" ><span style="font-size: 96px;">'+letter+'</span></div>'
+      },  
+      choices: ['M'], 
+      trial_duration: 1500, 
+      response_ends_trial: false, 
+      post_trial_gap: 500,  
+      data: { 
+        phase: 'Practice',  
+        match: jsPsych.timelineVariable('match')  
+      },  
+      on_finish: function(data){  
+        if(data.match == true){ 
+          data.correct = (data.response != null)  
+        } 
+        if(data.match == false){  
+          data.correct = (data.response === null) 
+        } 
+      } 
+    } 
+
+    var prac_n_back_trials = [ 
+      {match: true},  
+      {match: false}  
+    ] 
+
+
+    var prac_n_back_sequence = { 
+      timeline: [prac_n_back_trial], 
+      timeline_variables: prac_n_back_trials,  
+      sample: { 
+        type: 'with-replacement', 
+        size: prac_sequence_length,  
+        weights: [1, 2] 
+      } 
+    }
+
+
+      var prac_feedback = {  
+      type: 'html-button-response', 
+      stimulus: function(){ 
+        var test_trials = jsPsych.data.get().filter({phase: 'Practice'}).last(prac_sequence_length-1); 
+        var n_match = test_trials.filter({match: true}).count();  
+        var n_nonmatch = test_trials.filter({match: false}).count();  
+        var n_correct = test_trials.filter({match: true, correct: true}).count(); 
+        var false_alarms = test_trials.filter({match: false, correct: false}).count();  
+        var html = "<div style='width:800px;'>"+  
+          "<p>All done!</p>"+ 
+          "<p>You correctly identified "+n_correct+" of the "+n_match+" matching items.</p>"+ 
+          "<p>You incorrectly identified "+false_alarms+" of the "+n_nonmatch+" non-matching items as matches.</p>"+  
+          "<strong>Let's move to the actual test.</strong>"+ 
+          "<p style = 'color:rgb(255,150,100)'>Words might appear anywhere on the screen</p>"
+           
+          
+        return html;  
+      },  
+      choices: ["I'm ready to start!"] 
+    } 
+
+
+
+    timeline.push(prac_n_back_sequence);
+    timeline.push(prac_feedback);  
+
+
+
     /* N Back sequence trials */ 
 
     var min_divWidth = -1000
@@ -550,7 +648,7 @@
     var feedback = {  
       type: 'html-keyboard-response', 
       stimulus: function(){ 
-        var test_trials = jsPsych.data.get().filter({phase: 'test'}).last(sequence_length-2); 
+        var test_trials = jsPsych.data.get().filter({phase: 'test'}).last(sequence_length-1); 
         var n_match = test_trials.filter({match: true}).count();  
         var n_nonmatch = test_trials.filter({match: false}).count();  
         var n_correct = test_trials.filter({match: true, correct: true}).count(); 
