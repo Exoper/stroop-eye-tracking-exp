@@ -7,6 +7,8 @@
     <meta name="author" content="Jason Steffener, NCMLab">  
     <meta name="viewport" content="width=device-width, initial-scale=1.0">  
     <title>Stroop Color/Word</title>  
+   
+    <script src="../../jspsych/plugins/jspsych-image-button-response.js"></script> 
     <script src="../../jspsych/jspsych.js"></script>  
     <script src="../../jspsych/plugins/jspsych-html-keyboard-response.js"></script> 
     <script src="../../jspsych/plugins/jspsych-image-keyboard-response.js"></script>  
@@ -51,6 +53,13 @@
      var init_camera = {  
       type: "webgazer-init-camera", // what's with the extra width  
     };  
+   var overview = {
+    type: 'image-button-response',
+    stimulus: '../../assets/images/overview.png',
+    choices: ['continue'],
+    prompt: "<p>This is jsut an overview. You'll see detailed instructions ahead.</p>"
+    };
+   
     var validation = {  
       type: "webgazer-calibrate", 
       randomize_calibration_order:true, 
@@ -80,7 +89,12 @@
   subject: subject_id});  
     /* create timeline */ 
     var timeline = [];  
-    // adding webgazer  
+    // adding webgazer 
+   timeline.push({ 
+      type: 'fullscreen', 
+      fullscreen_mode: true,  
+    }); 
+   timeline.push(overview);
     var val = { 
     timeline: [validation], 
     repetitions: 2 // change it back to 2 
@@ -138,7 +152,7 @@
       type: "html-keyboard-response",
       stimulus: '<div style="width: 800px;">'+  
         '<p>Well done!!.</p>'+  
-       ' <p>Press any key to move to the next test, that is Continous Performance Test..</p>'+
+       ' <p>Press any key to move to Task-2 ..</p>'+
         '</div>', 
         choices: jsPsych.ALL_KEYS 
       }
@@ -325,7 +339,7 @@
         return "<p>You responded correctly on <strong>"+accuracy+"%</strong> of the "+total_trials+" trials.</p> " +  
         /*"<p>Your average response time for congruent trials was <strong>" + congruent_rt + "ms</strong>.</p>"+  
         "<p>Your average response time for incongruent trials was <strong>" + incongruent_rt + "ms</strong>.</p>"+*/  
-        "<p>Press any key to continue the experiment.</p>";     
+        "<p>Press any key to continue.</p>";     
       } 
     };  
     // This a conditional block which checks to see if the performance during practice was good enough  
@@ -460,7 +474,7 @@
     var instructions_1 = {  
       type: 'html-button-response', 
       stimulus: '<div style="width: 800px;">'+  
-        '<p>This experiment will test your ability to hold information in short-term, temporary memory. This is called working memory.</p>'+  
+        '<p>This task will test your ability to hold information in short-term, temporary memory. This is called working memory.</p>'+  
         '</div>', 
       choices: ["Continue"] 
     } 
@@ -675,7 +689,7 @@
       var instructions_tmt_1 = {  
       type: 'html-button-response', 
       stimulus: '<div style="width: 800px;">'+  
-        '<p>Please continue to head towards the last test of the experiment i.e. Trail Making Test. </p>'+  
+        '<p>Please continue to head towards the last task of the study i.e. Trail Making. </p>'+  
         '</div>', 
       choices: ["Continue"] 
     } 
