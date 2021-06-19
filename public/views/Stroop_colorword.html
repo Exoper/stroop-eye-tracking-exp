@@ -537,7 +537,15 @@
       choices: ['M'], 
       trial_duration: 1500, 
       response_ends_trial: false, 
-      post_trial_gap: 500,  
+      post_trial_gap: 500, 
+      extensions: [ 
+          { 
+            type: "webgazer", 
+            params: { 
+              targets: ["#jspsych-html-keyboard-response-stimulus"],  
+            },  
+          },  
+        ],
       data: { 
         phase: 'Practice',  
         match: jsPsych.timelineVariable('match')  
@@ -635,6 +643,15 @@
       trial_duration: 1500, 
       response_ends_trial: false, 
       post_trial_gap: 500,  
+      extensions: [ 
+          { 
+            type: "webgazer", 
+            params: { 
+              targets: ["#jspsych-html-keyboard-response-stimulus"],  
+            },  
+          },  
+        ],
+     
       data: { 
         phase: 'test',  
         match: jsPsych.timelineVariable('match')  
