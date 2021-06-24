@@ -65,16 +65,21 @@
       type: "webgazer-calibrate", 
       randomize_calibration_order:true, 
       repetitions_per_point:2,  
-    };  
+    }; 
     var survey_page1 = {  
     type: 'survey-text',  
     questions: [  
       {prompt: 'Name : ', columns: 50, name: 'firstname'},  
-      {prompt: 'Age : ', columns: 3, name: 'Age'},
-      {prompt: "Gender",  placeholder: ' M/F', columns:15, name:'Gender'},  
-      {prompt: "Have you taken this test before?",  placeholder: 'type Yes/No', columns:15, name:'prior_practice'}  
-    ],  
+      {prompt: 'Age : ', columns: 3, name: 'Age',required: true},
+      {prompt: "Gender",  placeholder: ' M/F', columns:15, name:'Gender',required: true},  
+      {prompt: "Have you taken this test before?",  placeholder: 'type Yes/No', columns:15, name:'prior_practice'},
+      {prompt: "Do you have any pre condition (such as ADHD, ASD, Autism, Dyslexia, other Learning Disabilities etc.)",  placeholder: 'type Yes/No', columns:15, name:'Medical_history',required: true},
+      {prompt: "If yes, please mention about it",  placeholder: 'ADHD/ ASD/ Autism/ Dyslexia/ Other Learning Disabilities/ Prefer not to say', columns:70, name:'Medical_history_2'},
+    ],
+    preamble: '<h1>Basic information</h1>' ,  
   }; 
+   
+ 
     var instructions_cal = {  
       type: 'html-button-response', 
       stimulus: '<div style="width: 800px;">'+  
