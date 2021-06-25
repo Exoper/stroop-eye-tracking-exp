@@ -61,6 +61,23 @@
     prompt: "<p>You'll see detailed instructions ahead. Press continue to proceed.</p>"
     };
    
+   
+   var scale_1 = [
+  "Yes"
+   ];
+
+var likert_page = {
+  type: 'survey-likert',
+  questions: [
+    {prompt: "Does your system have a working webcam?", name: 'Webcam', labels: scale_1, required:true},
+    {prompt: "Is your room sufficiently lit with the light being in front of your face rather than back?", name: 'Light', labels: scale_1,required:true},
+    {prompt: "You give your consent to record your screen and video while you perform the tasks.", name: 'Consent', labels: scale_1,required:true},
+    
+  ],
+  preamble: '<h1>Before you proceed</h1>' , 
+  randomize_question_order: false
+};
+   
     var validation = {  
       type: "webgazer-calibrate", 
       randomize_calibration_order:true, 
@@ -115,6 +132,7 @@
       fullscreen_mode: true,  
     }); 
    timeline.push(overview);
+   timeline.push(survey_page1);
     var val = { 
     timeline: [validation], 
     repetitions: 2 // change it back to 2 
