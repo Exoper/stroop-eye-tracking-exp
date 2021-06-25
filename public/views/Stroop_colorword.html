@@ -80,13 +80,27 @@
   }; 
    
  
-    var instructions_cal = {  
+        var instructions_cal = {  
       type: 'html-button-response', 
-      stimulus: '<div style="width: 800px;">'+  
-        '<p>Now we will calibrate the web gazer. It will take 2-3 minutes. On the next screen you will see a sequence of black dots.</p>'+
-        '<p> Keep your head steady and look at each dot for atleast 3-5 seconds, then click the dot.</p>'+  
+      stimulus: '<div style="width: 800px;border: thin solid #0000FF ; border-radius: 10px ;">'+  
+      `
+            <ul>
+            <li style="text-align:left; padding:8px; font-size: 18px">    Now we will calibrate the web gazer.</li>
+            <li style="text-align:left; padding:8px; font-size: 18px">It will take 2-3 minutes.</li>
+            <li style="text-align:left; padding:8px; font-size: 18px">On the next screen you will see a sequence of black dots.</li>
+            <li style="text-align:left; padding:8px; font-size: 18px">Keep your head steady and look at each dot for atleast 3 seconds, then click the dot.</li>
+            </ul>`
+
+        +  
         '</div>', 
-      choices: ["Continue"] 
+      choices: ["Continue"] ,
+      on_finish: function(){
+          elem = document.getElementById("jspsych-html-button-response-stimulus");
+         // var e = GetElementInsideContainer("jspsych-content", "jspsych-html-button-response-stimulus");
+         // var x = document.getElementById("jspsych-content").querySelector("#jspsych-html-button-response-stimulus");
+        console.log(elem);
+      }
+
     } 
     
   var subject_id = jsPsych.randomization.randomID(15);  
