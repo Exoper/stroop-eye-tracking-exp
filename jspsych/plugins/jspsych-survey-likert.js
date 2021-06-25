@@ -107,7 +107,7 @@ jsPsych.plugins["survey-likert"] = (function () {
     // show preamble text
     if (trial.preamble !== null) {
       html +=
-        '<div id="jspsych-survey-likert-preamble" class="jspsych-survey-likert-preamble">' +
+        '<div id="jspsych-survey-likert-preamble" class="jspsych-survey-likert-preamble" style="border: thin solid #0000FF ; border-radius: 10px ; background-color: #e7ecfd;">' +
         trial.preamble +
         "</div>";
     }
