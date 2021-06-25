@@ -57,7 +57,7 @@ jsPsych.plugins["html-button-response"] = (function() {
       margin_vertical: {
         type: jsPsych.plugins.parameterType.STRING,
         pretty_name: 'Margin vertical',
-        default: '0px',
+        default: '15px',
         description: 'The vertical margin of the button.'
       },
       margin_horizontal: {
