@@ -812,10 +812,20 @@ var likert_page = {
     var instructions_tmt_2 = {  
       type: 'html-button-response', 
       stimulus: '<div style="width: 800px;border: thin solid #65dc7f ; border-radius: 10px ;">'+  
-        '<p> On the next screen you will see bubbles with a character written in them. Click on the bubbles starting from 1. You need to make the trail pattern 1-A-2-B-3-C-4-D.......</p>'+  
+        
+            `
+            <ul>
+            <li style="text-align:left; padding:8px; font-size: 18px">    On the next screen you will see bubbles with a character written in them.</li>
+            <li style="text-align:left; padding:8px; font-size: 18px">Click on the bubbles starting from 1.</li>
+            <li style="text-align:left; padding:8px; font-size: 18px">You need to make the trail pattern 1-A-2-B-3-C-4-D.......</li>
+          
+            </ul>`
+
+          +  
         '</div>', 
       choices: ["Continue"] 
     } 
+
 
 
   var grid_rows = 10;
