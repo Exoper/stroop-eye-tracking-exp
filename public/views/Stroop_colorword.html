@@ -200,7 +200,23 @@ var likert_page = {
     var ColorWordTestInstr = {  
        type: 'instructions',  
        pages: ColorWordTestInstrText, 
-       show_clickable_nav: true 
+       show_clickable_nav: true,
+     on_start : function(){
+        var e = document.getElementById("jspsych-content");
+         e.style.border = "thin solid #0000FF" ;
+        // e.style.backgroundColor = "#eaf4f4"
+        e.style.borderRadius  = "10px" ;
+        e.style.padding= "10px";
+        // border: thin solid #0000FF ; border-radius: 10px ; padding: 10px
+       },
+       on_finish : function(){
+        var e = document.getElementById("jspsych-content");
+         e.style.border = "thin solid #FFFFFF" ;
+        e.style.backgroundColor = "#FFFFFF"
+        e.style.borderRadius  = "0px" ;
+        e.style.padding= "0px";
+        // border: thin solid #0000FF ; border-radius: 10px ; padding: 10px
+       }
     } 
       /* define thank you trial */  
     var thank_you = { 
