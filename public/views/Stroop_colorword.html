@@ -761,18 +761,26 @@ var likert_page = {
 
       //////////////////////////////////////////////////////////
 
+      var start_tmt = {
+      type:'html-button-response',
+      stimulus:'<div style="width: 800px; padding: 50px; border-radius: 10px ;background-color: ##cfffc1">'+'<p style="font-size:20px">Welcome to the Task 3:</p>'+'<h1>Trail-Making Task</h1>',
+      choices: ["Continue"] ,
+    }
+
+    // timeline.push(start_cpt);
+
       var instructions_tmt_1 = {  
       type: 'html-button-response', 
       stimulus: '<div style="width: 800px;">'+  
-        '<p>Please continue to head towards the last task of the study i.e. Trail Making. </p>'+  
+        '<p>Please continue to head towards the last task of the study </p>'+  
         '</div>', 
       choices: ["Continue"] 
     } 
 
     var instructions_tmt_2 = {  
       type: 'html-button-response', 
-      stimulus: '<div style="width: 800px;">'+  
-        '<p> On the next screen you will see bubbles with a character return in them. Click on the bubbles starting from 1. You need to make the trail pattern 1-A-2-B-3-C-4-D.......</p>'+  
+      stimulus: '<div style="width: 800px;border: thin solid ##65dc7f ; border-radius: 10px ;">'+  
+        '<p> On the next screen you will see bubbles with a character written in them. Click on the bubbles starting from 1. You need to make the trail pattern 1-A-2-B-3-C-4-D.......</p>'+  
         '</div>', 
       choices: ["Continue"] 
     } 
@@ -915,6 +923,7 @@ var likert_page = {
   // });
 
   timeline.push(instructions_tmt_1)
+  timeline.push(start_tmt);
   timeline.push(instructions_tmt_2)
   timeline.push(timeline_2)
 
