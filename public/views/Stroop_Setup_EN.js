@@ -36,7 +36,7 @@ var ColorWordInstrText = [
 
 var ColorWordInstrPoorPerformanceText = ['<p style="font-size:'+TextFontSize+'">There will be another run of practice trials with feedback.</p> <p style="font-size:'+TextFontSize+'">Remember to respond as accurately and quickly as possible.</p>'];
 
-var ColorWordTestInstrText = ['<p style="font-size:'+TextFontSize+'">Moving to the actual test. The stimulus need not be in the centre and you will now respond without any feedback. Try to respond as quickly and accurately as possible. </p>'];
+var ColorWordTestInstrText = ['<p style="font-size:'+TextFontSize+'">Moving to the actual test.</p>'+'<p>The stimulus need not be in the centre and you will now respond without any feedback.</p>'+'<p>Try to respond as quickly and accurately as possible. </p>'];
 
 var ColorThankYouText = 'Thank you. Press any key to end the experiment.'
 
