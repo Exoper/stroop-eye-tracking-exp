@@ -82,7 +82,7 @@ var likert_page = {
     var validation = {  
       type: "webgazer-calibrate", 
       randomize_calibration_order:true, 
-      repetitions_per_point:2,  
+      repetitions_per_point:1,  //back to 2  
     }; 
     var survey_page1 = {  
     type: 'survey-text',  
@@ -160,6 +160,11 @@ var likert_page = {
     images: ["../../assets/images/st_instructions.png","../../assets/images/on_trial.png"]
     };
     
+   var start_stroop = {
+      type:'html-button-response',
+      stimulus:'<div style="width: 800px; padding: 50px; border-radius: 10px ;background-color: #eaf4f4">'+'<p style="font-size:20px">Welcome to the Task 1:</p>'+'<h1>Stroop Color/Word.</h1>',
+      choices: ["Continue"] ,
+    }
     
    /* Create the initial welcome and instructions for practice. 
    This uses the built in instructions module. Make sure it gets imported above */  
@@ -399,6 +404,7 @@ var likert_page = {
         } 
       } 
     } 
+    timeline.push(start_stroop);
     timeline.push(ColorWordInstr);  
     // run the practice trials  
     timeline.push(practice_procedure);  
