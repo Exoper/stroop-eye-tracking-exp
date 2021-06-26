@@ -24,8 +24,15 @@ var WordTestInstrText = ['<p style="font-size:'+TextFontSize+'">Now you will do 
     
 var ColorWordInstrText = [
       '<p style="font-size:'+TextFontSize+'">Please read the instructions carefully.</p>'+'<p>Use "next" and "previous" buttons to navigate through instructions.</p>',
-      '<p style="font-size:'+TextFontSize+'">In this task, words will appear in the center of the screen. You need to indicate the COLOR that the word is written in (and ignore what the word says). Press the key that corresponds to that color, as shown in the figure. This figure will be present during the entire experiment.</p><img src="' + keyboard_path + '"width= "500"></img>',
-      '<p style="font-size:'+TextFontSize+'">Before doing the actual trial you will complete some practice trials. These will give you feedback about your accuracy. <p style="font-size:'+TextFontSize+'">Remember to respond as accurately and quickly as possible.</p>'];
+            `
+            <ul>
+            <li style="text-align:left; padding:8px; font-size: 18px">    In this task, words will appear in the center of the screen.</li>
+            <li style="text-align:left; padding:8px; font-size: 18px">You need to indicate the COLOR that the word is written in (and ignore what the word says).</li>
+            <li style="text-align:left; padding:8px; font-size: 18px">Press the key that corresponds to that color, as shown in the figure. This figure will be present during the entire experiment.</li>
+            <p><img src='../../assets/images/st_instructions.png' width= "500" ></img></p>
+            </ul>`
+	,
+      '<p style="font-size:'+TextFontSize+'">Before doing the actual trial you will complete some practice trials.</p>'+'<p> These will give you feedback about your accuracy. <p style="font-size:'+TextFontSize+'">Remember to respond as accurately and quickly as possible.</p>'];
 
 var ColorWordInstrPoorPerformanceText = ['<p style="font-size:'+TextFontSize+'">There will be another run of practice trials with feedback.</p> <p style="font-size:'+TextFontSize+'">Remember to respond as accurately and quickly as possible.</p>'];
 
@@ -47,14 +54,14 @@ var FeedbackLength = 400; // This is in milliseconds
 
 var ColorPracticeRepeats = 4
 var WordPracticeRepeats = 4
-var ColorWordPracticeRepeats = 2
+var ColorWordPracticeRepeats = 1 /////////////////////// 2
 
 // Since there are 4 possible trials, the number of trials will be 4 times the number of repeats
 var ColorTestRepeats = 8
 // Since there are 4 possible trials, the number of trials will be 4 times the number of repeats
 var WordTestRepeats = 8
 // Since there are 16 possible trials, the number of trials will be 4 times the number of repeats
-var ColorWordTestRepeats = 4
+var ColorWordTestRepeats = 1  /////////////////////////// 4
 
 
 
