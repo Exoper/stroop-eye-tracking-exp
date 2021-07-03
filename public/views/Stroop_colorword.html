@@ -130,7 +130,11 @@ var likert_page = {
   var validate = {
     type: 'webgazer-validate',
     validation_points: [[25,25], [25,75], [75,25], [75,75]],
-    show_validation_data: true
+    show_validation_data: true,
+   on_finish: function(){
+      // jsPsych.extensions["webgazer"].pause();
+      jsPsych.extensions["webgazer"].hidePredictions();
+    },
   }
   var subject_id = jsPsych.randomization.randomID(15);  
   subject_id = subject_id.toString() + survey_page1.firstname;  
@@ -160,8 +164,8 @@ var likert_page = {
     });  
     timeline.push(instructions_cal);
     timeline.push(val);
-//    timeline.push(validation_instructions);
-//    timeline.push(validate);
+   timeline.push(validation_instructions);
+   timeline.push(validate);
     //timeline.push(preload);
     // Make experiment run in full screen mode  
     // Note, that the fullscreen plugin needs to imported above 
@@ -266,13 +270,15 @@ var likert_page = {
         t1 = t1.toString()
 
 
-        var Stim = '<div style = "'+t1+'" ><p class="stimulus" style="color:rgb'+jsPsych.timelineVariable('Color', true)+';font-size:50px;">' +jsPsych.timelineVariable('Word', true)+'</p>'  
+        var Stim = '<div style = "'+t1+'" ><p class="stimulus" style="color:rgb'+jsPsych.timelineVariable('Color', true)+';font-size:70px;">' +jsPsych.timelineVariable('Word', true)+'</p>'  
         //var temp = PutIntoTable('',Stim)  
         return Stim;  
         //return '<p class="stimulus" style="color:rgb'+jsPsych.timelineVariable('Color', true)+';">' +jsPsych.timelineVariable('Word', true)+'</p>';   
       },  
       choices: ['ArrowLeft','ArrowDown','ArrowRight'], 
       post_trial_gap: 0,  
+      trial_duration: 3000, 
+      response_ends_trial: true,
       extensions: [ 
           { 
             type: "webgazer", 
@@ -311,7 +317,9 @@ var likert_page = {
         return temp;  
       },  
       choices: ['ArrowLeft','ArrowDown','ArrowRight'], 
-      post_trial_gap: 0,  
+      post_trial_gap: 0,
+      trial_duration: 3000, 
+      response_ends_trial: true,
       extensions: [ 
           { 
             type: "webgazer", 
