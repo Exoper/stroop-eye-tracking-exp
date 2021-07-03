@@ -19,7 +19,8 @@
     <script src="../../jspsych/plugins/jspsych-webgazer-init-camera.js"></script> 
     <script src="../../jspsych/plugins/jspsych-survey-text.js"></script>
     <script src="../../jspsych/plugins/jspsych-survey-likert.js"></script> 
-      
+     
+    <script src="../../jspsych/plugins/jspsych-webgazer-validate.js"></script> 
     <script src="../../jspsych/plugins/jspsych-external-html.js"></script>  
     <script src="../../jspsych/plugins/jspsych-call-function.js"></script>  
     <script src="../../jspsych/plugins/jspsych-webgazer-calibrate.js"></script> 
@@ -112,15 +113,25 @@ var likert_page = {
         +  
         '</div>', 
       choices: ["Continue"] ,
-      on_finish: function(){
-          elem = document.getElementById("jspsych-html-button-response-stimulus");
-         // var e = GetElementInsideContainer("jspsych-content", "jspsych-html-button-response-stimulus");
-         // var x = document.getElementById("jspsych-content").querySelector("#jspsych-html-button-response-stimulus");
-        console.log(elem);
-      }
-
+      
     } 
     
+    var validation_instructions = {
+    type: 'html-button-response',
+    stimulus: `<div style="width: 800px;border: thin solid #0000FF ; border-radius: 10px ;">
+      <p>Let's see how accurate the eye tracking is. </p>
+      <p>Keep your head still, and move your eyes to focus on each dot as it appears.</p>
+      <p>You do not need to click on the dots. Just move your eyes to look at the dots.</p>
+    `,
+    choices: ['Click to begin'],
+    post_trial_gap: 1000
+  }
+
+  var validate = {
+    type: 'webgazer-validate',
+    validation_points: [[25,25], [25,75], [75,25], [75,75]],
+    show_validation_data: true
+  }
   var subject_id = jsPsych.randomization.randomID(15);  
   subject_id = subject_id.toString() + survey_page1.firstname;  
   jsPsych.data.addProperties({  
@@ -149,6 +160,8 @@ var likert_page = {
     });  
     timeline.push(instructions_cal);
     timeline.push(val);
+   timeline.push(validation_instructions);
+   timeline.push(validate);
     //timeline.push(preload);
     // Make experiment run in full screen mode  
     // Note, that the fullscreen plugin needs to imported above 
