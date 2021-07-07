@@ -103,10 +103,10 @@ jsPsych.plugins['survey-text'] = (function() {
     var html = '';
     // show preamble text
     if(trial.preamble !== null){
-      html += '<div id="jspsych-survey-text-preamble" class="jspsych-survey-text-preamble">'+trial.preamble+'</div>';
+      html += '<div id="jspsych-survey-text-preamble" class="jspsych-survey-text-preamble" style="border: thin solid #0000FF ; border-radius: 10px ; background-color: #e7ecfd;" >'+trial.preamble+'</div>';
     }
     // start form
-    if (trial.autocomplete) {
+    if (trial.autocomplete) { 
       html += '<form id="jspsych-survey-text-form">';
     } else {
       html += '<form id="jspsych-survey-text-form" autocomplete="off">';

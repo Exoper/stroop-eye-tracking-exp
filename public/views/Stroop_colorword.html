@@ -1,4 +1,4 @@
-  <!DOCTYPE html> 
+ <!DOCTYPE html> 
 <html>  
   <head>  
     <meta charset="UTF-8">  
@@ -7,6 +7,8 @@
     <meta name="author" content="Jason Steffener, NCMLab">  
     <meta name="viewport" content="width=device-width, initial-scale=1.0">  
     <title>Stroop Color/Word</title>  
+   
+    
     <script src="../../jspsych/jspsych.js"></script>  
     <script src="../../jspsych/plugins/jspsych-html-keyboard-response.js"></script> 
     <script src="../../jspsych/plugins/jspsych-image-keyboard-response.js"></script>  
@@ -15,8 +17,10 @@
     <script src="../../jspsych/plugins/jspsych-instructions.js"></script> 
     <script src="../views/Stroop_Setup_EN.js"></script> 
     <script src="../../jspsych/plugins/jspsych-webgazer-init-camera.js"></script> 
-    <script src="../../jspsych/plugins/jspsych-survey-text.js"></script>  
-      
+    <script src="../../jspsych/plugins/jspsych-survey-text.js"></script>
+    <script src="../../jspsych/plugins/jspsych-survey-likert.js"></script> 
+     
+    <script src="../../jspsych/plugins/jspsych-webgazer-validate.js"></script> 
     <script src="../../jspsych/plugins/jspsych-external-html.js"></script>  
     <script src="../../jspsych/plugins/jspsych-call-function.js"></script>  
     <script src="../../jspsych/plugins/jspsych-webgazer-calibrate.js"></script> 
@@ -24,7 +28,9 @@
     <script src="../../jspsych/extensions/jspsych-ext-webgazer.js"></script>  
     <script src="https://smtpjs.com/v3/smtp.js"></script> 
     <script src="../views/tmt.js"></script>
-
+    
+    <script src="../../jspsych/plugins/jspsych-image-button-response.js"></script> 
+    <script src="../../jspsych/plugins/jspsych-preload.js"></script>
     <!-- <link href="jspsych/css/jspsych.css" rel="stylesheet" type="text/css"> --> 
     <link href="../../jspsych/css/jspsych.css" rel="stylesheet" type="text/css">  
      <script src="../saver/fileSaver.js"></script>  
@@ -50,56 +56,155 @@
      var init_camera = {  
       type: "webgazer-init-camera", // what's with the extra width  
     };  
+   var overview = {
+    type: 'image-button-response',
+    stimulus: '../../assets/images/overview.png',
+    choices: ['continue'],
+    prompt: "<p>You'll see detailed instructions ahead. Press continue to proceed.</p>"
+    };
+   
+   
+   var scale_1 = [
+  "Yes"
+   ];
+
+var likert_page = {
+  type: 'survey-likert',
+  questions: [
+    {prompt: "Does your system have a working webcam?", name: 'Webcam', labels: scale_1, required:true},
+    {prompt: "Is your room sufficiently lit with the light being in front of your face rather than back?", name: 'Light', labels: scale_1,required:true},
+    {prompt: "You voluntarily participate in this study and have already signed the consent form.", name: 'Consent', labels: scale_1,required:true},
+    
+  ],
+  preamble: '<h1>Before you proceed</h1>' , 
+  randomize_question_order: false
+};
+   
     var validation = {  
       type: "webgazer-calibrate", 
       randomize_calibration_order:true, 
-      repetitions_per_point:2,  
-    };  
+      repetitions_per_point:1,  //back to 2  
+    }; 
     var survey_page1 = {  
     type: 'survey-text',  
     questions: [  
       {prompt: 'Name : ', columns: 50, name: 'firstname'},  
-      {prompt: 'Age : ', columns: 3, name: 'Age'},
-      {prompt: "Gender",  placeholder: ' M/F', columns:15, name:'Gender'},  
-      {prompt: "Have you taken this test before?",  placeholder: 'type Yes/No', columns:15, name:'prior_practice'}  
-    ],  
+      {prompt: 'Age : ', columns: 3, name: 'Age',required: true},
+      {prompt: "Gender",  placeholder: ' M/F', columns:15, name:'Gender',required: true},  
+      {prompt: "Have you taken this test before?",  placeholder: 'type Yes/No', columns:15, name:'prior_practice'},
+      {prompt: "Do you have any pre condition (such as ADHD, ASD, Autism, Dyslexia, other Learning Disabilities etc.)",  placeholder: 'type Yes/No', columns:15, name:'Medical_history',required: true},
+      {prompt: "If yes, please mention about it",  placeholder: 'ADHD/ ASD/ Autism/ Dyslexia/ Other Learning Disabilities/ Prefer not to say', columns:70, name:'Medical_history_2'},
+    ],
+    preamble: '<h1>Basic information</h1>' ,  
   }; 
-    var instructions_cal = {  
+   
+ 
+        var instructions_cal = {  
       type: 'html-button-response', 
-      stimulus: '<div style="width: 800px;">'+  
-        '<p>Now we will calibrate the web gazer. On the next screen you will see a sequence of black dots. Keep your head steady and look at each dot for atleast 3-5 seconds, then click the dot.</p>'+  
+      stimulus: '<div style="width: 800px;border: thin solid #0000FF ; border-radius: 10px ;">'+  
+      `
+            <ul>
+            <li style="text-align:left; padding:8px; font-size: 18px">    Now we will calibrate the web gazer.</li>
+            <li style="text-align:left; padding:8px; font-size: 18px">It will take 2-3 minutes.</li>
+            <li style="text-align:left; padding:8px; font-size: 18px">On the next screen you will see a sequence of black dots. There will be 20 of them.</li>
+            <li style="text-align:left; padding:8px; font-size: 18px">Keep your head steady and look at each dot for atleast 3 seconds, then click the dot.</li>
+            </ul>`
+
+        +  
         '</div>', 
-      choices: ["Continue"] 
+      choices: ["Continue"] ,
+      
     } 
     
+    var validation_instructions = {
+    type: 'html-button-response',
+    stimulus: `<div style="width: 800px;border: thin solid #0000FF ; border-radius: 10px ;">
+      <p>Let's see how accurate the eye tracking is. </p>
+      <p>Keep your head still, and move your eyes to focus on each dot as it appears.</p>
+      <p>You do not need to click on the dots. Just move your eyes to look at the dots.</p>
+    `,
+    choices: ['Click to begin'],
+    post_trial_gap: 1000
+  }
+
+  var validate = {
+    type: 'webgazer-validate',
+    validation_points: [[25,25], [25,75], [75,25], [75,75]],
+    show_validation_data: true,
+   on_finish: function(){
+      // jsPsych.extensions["webgazer"].pause();
+      jsPsych.extensions["webgazer"].hidePredictions();
+    },
+  }
   var subject_id = jsPsych.randomization.randomID(15);  
   subject_id = subject_id.toString() + survey_page1.firstname;  
   jsPsych.data.addProperties({  
   subject: subject_id});  
     /* create timeline */ 
     var timeline = [];  
-    // adding webgazer  
+    // adding webgazer 
+   timeline.push({ 
+      type: 'fullscreen', 
+      fullscreen_mode: true,  
+    }); 
+   timeline.push(overview);
+   timeline.push(likert_page);
     var val = { 
     timeline: [validation], 
     repetitions: 2 // change it back to 2 
     };  
-    timeline.push(survey_page1);  
+
+    // timeline.push(preload);
+    timeline.push(survey_page1); 
+
     timeline.push(init_camera);
-    timeline.push(instructions_cal);
-    timeline.push(val); 
-    // Make experiment run in full screen mode  
-    // Note, that the fullscreen plugin needs to imported above 
     timeline.push({ 
       type: 'fullscreen', 
       fullscreen_mode: true,  
-    }); 
+    });  
+    timeline.push(instructions_cal);
+    timeline.push(val);
+   timeline.push(validation_instructions);
+   timeline.push(validate);
+    //timeline.push(preload);
+    // Make experiment run in full screen mode  
+    // Note, that the fullscreen plugin needs to imported above 
+    
       
+    var preload = {
+    type: 'preload',
+    auto_preload: true,  
+    images: ["../../assets/images/st_instructions.png","../../assets/images/on_trial.png"]
+    };
+    
+   var start_stroop = {
+      type:'html-button-response',
+      stimulus:'<div style="width: 800px; padding: 50px; border-radius: 10px ;background-color: #eaf4f4">'+'<p style="font-size:20px">Welcome to the Task 1:</p>'+'<h1>Stroop Color/Word</h1>',
+      choices: ["Continue"] ,
+    }
+    
    /* Create the initial welcome and instructions for practice. 
    This uses the built in instructions module. Make sure it gets imported above */  
      var ColorWordInstr = { 
        type: 'instructions',  
        pages: ColorWordInstrText, 
-       show_clickable_nav: true 
+       show_clickable_nav: true ,
+      on_start : function(){
+        var e = document.getElementById("jspsych-content");
+         e.style.border = "thin solid #0000FF" ;
+        // e.style.backgroundColor = "#eaf4f4"
+        e.style.borderRadius  = "10px" ;
+        e.style.padding= "10px";
+        // border: thin solid #0000FF ; border-radius: 10px ; padding: 10px
+       },
+       on_finish : function(){
+        var e = document.getElementById("jspsych-content");
+         e.style.border = "thin solid #FFFFFF" ;
+        e.style.backgroundColor = "#FFFFFF"
+        e.style.borderRadius  = "0px" ;
+        e.style.padding= "0px";
+        // border: thin solid #0000FF ; border-radius: 10px ; padding: 10px
+       }
     } 
     /* After practice is completed the performance is being checked. If accuracy is below 50% then the practice is repeated.  
     These are the instructions stating that practice will be repeated. */ 
@@ -112,7 +217,23 @@
     var ColorWordTestInstr = {  
        type: 'instructions',  
        pages: ColorWordTestInstrText, 
-       show_clickable_nav: true 
+       show_clickable_nav: true,
+     on_start : function(){
+        var e = document.getElementById("jspsych-content");
+         e.style.border = "thin solid #0000FF" ;
+        // e.style.backgroundColor = "#eaf4f4"
+        e.style.borderRadius  = "10px" ;
+        e.style.padding= "10px";
+        // border: thin solid #0000FF ; border-radius: 10px ; padding: 10px
+       },
+       on_finish : function(){
+        var e = document.getElementById("jspsych-content");
+         e.style.border = "thin solid #FFFFFF" ;
+        e.style.backgroundColor = "#FFFFFF"
+        e.style.borderRadius  = "0px" ;
+        e.style.padding= "0px";
+        // border: thin solid #0000FF ; border-radius: 10px ; padding: 10px
+       }
     } 
       /* define thank you trial */  
     var thank_you = { 
@@ -124,7 +245,7 @@
       type: "html-keyboard-response",
       stimulus: '<div style="width: 800px;">'+  
         '<p>Well done!!.</p>'+  
-       ' <p>Press any key to move to the next test, that is Continous Performance Test..</p>'+
+       ' <p>Press any key to move to Task-2 ..</p>'+
         '</div>', 
         choices: jsPsych.ALL_KEYS 
       }
@@ -149,13 +270,15 @@
         t1 = t1.toString()
 
 
-        var Stim = '<div style = "'+t1+'" ><p class="stimulus" style="color:rgb'+jsPsych.timelineVariable('Color', true)+';">' +jsPsych.timelineVariable('Word', true)+'</p>'  
-        var temp = PutIntoTable('',Stim)  
-        return temp;  
+        var Stim = '<div style = "'+t1+'" ><p class="stimulus" style="color:rgb'+jsPsych.timelineVariable('Color', true)+';font-size:70px;">' +jsPsych.timelineVariable('Word', true)+'</p>'  
+        //var temp = PutIntoTable('',Stim)  
+        return Stim;  
         //return '<p class="stimulus" style="color:rgb'+jsPsych.timelineVariable('Color', true)+';">' +jsPsych.timelineVariable('Word', true)+'</p>';   
       },  
-      choices: ['v','b','n','m'], 
+      choices: ['ArrowLeft','ArrowDown','ArrowRight'], 
       post_trial_gap: 0,  
+      trial_duration: 3000, 
+      response_ends_trial: true,
       extensions: [ 
           { 
             type: "webgazer", 
@@ -179,7 +302,42 @@
         data.correct = jsPsych.pluginAPI.compareKeys(data.response, data.letter); 
       } 
     } 
-    var prac_stimulus = Object.assign({}, Stimulus) 
+
+
+
+
+    // New stationary Stimulus for practice trials
+
+    var prac_Stimulus = {  
+      type: 'html-keyboard-response', 
+      stimulus: function()  
+      {   
+        var Stim =  '<p class="stimulus" style="color:rgb'+jsPsych.timelineVariable('Color', true)+';">' +jsPsych.timelineVariable('Word', true)+'</p>';   
+        var temp = PutIntoTable('',Stim)  
+        return temp;  
+      },  
+      choices: ['ArrowLeft','ArrowDown','ArrowRight'], 
+      post_trial_gap: 0,
+      trial_duration: 3000, 
+      response_ends_trial: true,
+      extensions: [ 
+          { 
+            type: "webgazer", 
+            params: { 
+              targets: ["#jspsych-html-keyboard-response-stimulus"],  
+            },  
+          },  
+        ],  
+ 
+      on_finish: function(data){  
+        var correct_response = data.letter; 
+        console.log(data.response, data.letter);  
+        data.correct = jsPsych.pluginAPI.compareKeys(data.response, data.letter); 
+      } 
+    } 
+
+    var prac_stimulus = Object.assign({}, prac_Stimulus) 
+   
     prac_stimulus = Object.assign(prac_stimulus, {      
       data: { 
         Congruency: jsPsych.timelineVariable('Congruency'), 
@@ -195,6 +353,24 @@
         type: 'test trial'  
       } 
     })  
+
+    // Without image fixation
+
+    var test_fixation = {  
+      type: 'html-keyboard-response', 
+      stimulus: function(){ 
+        return '<div style="font-size:60px;">+</div><p><p>' ; 
+      },  
+        
+        
+      choices: jsPsych.NO_KEYS, 
+      trial_duration: function(){ 
+          return jsPsych.randomization.sampleWithoutReplacement([250, 500, 750, 1000, 1250, 1500, 1750, 2000], 1)[0]; 
+        },  
+      data: {type: 'fixation'}  
+    } 
+
+
     var fixation = {  
       type: 'html-keyboard-response', 
       stimulus: function(){ 
@@ -240,7 +416,7 @@
     } 
     // Define the test procedure which does NOT provide feedback  
     var test_procedure = {  
-      timeline: [fixation, test_stimulus],  
+      timeline: [test_fixation, test_stimulus],  
       timeline_variables: StroopColorWordList,  
       sample: { 
         type: 'fixed-repetitions',  
@@ -260,7 +436,7 @@
         return "<p>You responded correctly on <strong>"+accuracy+"%</strong> of the "+total_trials+" trials.</p> " +  
         /*"<p>Your average response time for congruent trials was <strong>" + congruent_rt + "ms</strong>.</p>"+  
         "<p>Your average response time for incongruent trials was <strong>" + incongruent_rt + "ms</strong>.</p>"+*/  
-        "<p>Press any key to continue the experiment.</p>";     
+        "<p>Press any key to continue.</p>";     
       } 
     };  
     // This a conditional block which checks to see if the performance during practice was good enough  
@@ -281,6 +457,7 @@
         } 
       } 
     } 
+    timeline.push(start_stroop);
     timeline.push(ColorWordInstr);  
     // run the practice trials  
     timeline.push(practice_procedure);  
@@ -382,45 +559,162 @@
 
 ////////////////////////////////////////////////////////////////////////////  
 ////////////////////////////////////////////////////////////////////////////  
-          
-            
+       
         //timeline.push(trial)  
             
     var n_back_set = ['Z', 'X', 'C', 'V', 'B', 'N'];  
     var sequence = [];  
-    var how_many_back = 2;  
+    var prac_sequence = [] ;
+    var how_many_back = 1;  
+    var prac_sequence_length = 10 ;
     var sequence_length = 20; 
     /* Instructions */  
-    var instructions_1 = {  
+     
+    var start_cpt = {
+      type:'html-button-response',
+      stimulus:'<div style="width: 800px; padding: 50px; border-radius: 10px ;background-color: #fff1f1">'+'<p style="font-size:20px">Welcome to the Task 2:</p>'+'<h1>Continuous Performance Task</h1>',
+      choices: ["Continue"] ,
+    }
+
+    timeline.push(start_cpt);
+     
+        var instructions_1 = {  
       type: 'html-button-response', 
-      stimulus: '<div style="width: 800px;">'+  
-        '<p>This experiment will test your ability to hold information in short-term, temporary memory. This is called working memory.</p>'+  
+      stimulus: '<div style="width: 800px;border: thin solid #ec7b7b ; border-radius: 10px ; padding: 10px">'+  
+        '<p>This task will test your ability to hold information in short-term, temporary memory.</p>'+'<p>This is called working memory.</p>'+  
         '</div>', 
       choices: ["Continue"] 
     } 
     timeline.push(instructions_1);  
+
+
     var instructions_2 = {  
       type: 'html-button-response', 
-      stimulus: '<div style="width: 800px;">'+  
-        '<p>You will see a sequence of letters presented one at a time. Your task is to determine if the letter on the screen matches '+  
-        'the letter that appeared two letters before.</p>'+ 
-        '<p>If the letter is match <span style="font-weight: bold;">press the M key.</span></p>'+ 
-        '<p>For example, if you saw the sequence X, C, V, B, V, X you would press the M key when the second V appeared on the screen.</p>'+ 
-        '<p>You do not need to press any key when there is not a match.</p>'+ 
+      stimulus: '<div style="width: 800px;border: thin solid #ec7b7b ; border-radius: 10px ; padding: 10px">'+  
+            `
+            <ol>
+            <li style="text-align:left; padding:8px; font-size: 18px">You will see a sequence of letters presented one at a time. Your task is to determine if the letter on the screen is the same that appeared on the last screen.</li>
+            <li style="text-align:left; padding:8px; font-size: 18px">If the letter is a match <span style="font-weight: bold;">press the M key.</li>
+            <li style="text-align:left; padding:8px; font-size: 18px">For example, if you saw the sequence X, C, C, B, B, X you would press the M key when the second C appeared and similarly when the second B appeared on the screen.</li>
+            <li style="text-align:left; padding:8px; font-size: 18px">You do not need to press any key when there is not a match.</li>
+            </ol>`
+          + 
         '</div>', 
       choices: ["Continue"] 
     } 
     timeline.push(instructions_2);  
     var instructions_3 = {  
       type: 'html-button-response', 
-      stimulus: '<div style="width: 800px;">'+  
+      stimulus: '<div style="width: 800px;border: thin solid #ec7b7b ; border-radius: 10px ;padding: 10px">'+  
         '<p>The sequence will begin on the next screen.</p>'+ 
-        '<p>Remember: press the M key if the letter on the screen matches the letter that appeared two letters ago.</p>'+ 
+        '<p>This is a practice trial. Lets see how focused you are.</p>'+ 
+        '<p>Remember: press the M key if a letter appears on simultaneous screens.</p>'+ 
         '</div>', 
       choices: ["I'm ready to start!"], 
       post_trial_gap: 1000  
     } 
     timeline.push(instructions_3);  
+
+
+   
+
+
+
+    // Setting up the practice sequence
+
+     var prac_n_back_trial = {  
+      type: 'html-keyboard-response', 
+      stimulus: function() {  
+        if(prac_sequence.length < how_many_back){  
+          var letter = jsPsych.randomization.sampleWithoutReplacement(n_back_set, 1)[0] 
+        } else {  
+          if(jsPsych.timelineVariable('match', true) == true){  
+            var letter = prac_sequence[prac_sequence.length - how_many_back]; 
+          } else {  
+            var possible_letters = jsPsych.randomization.sampleWithoutReplacement(n_back_set, 2); 
+            if(possible_letters[0] != prac_sequence[prac_sequence.length - how_many_back]){ 
+              var letter = possible_letters[0]; 
+            } else {  
+              var letter = possible_letters[1]; 
+            } 
+          } 
+        } 
+        prac_sequence.push(letter);  
+        
+        return '<div style = "centre" ><span style="font-size: 96px;">'+letter+'</span></div>'
+        //'<div style = "margin-top:100px ; margin-left:200px" ><span style="font-size: 96px;">'+letter+'</span></div>'
+      },  
+      choices: ['M'], 
+      trial_duration: 1500, 
+      response_ends_trial: false, 
+      post_trial_gap: 500, 
+      extensions: [ 
+          { 
+            type: "webgazer", 
+            params: { 
+              targets: ["#jspsych-html-keyboard-response-stimulus"],  
+            },  
+          },  
+        ],
+      data: { 
+        phase: 'Practice',  
+        match: jsPsych.timelineVariable('match')  
+      },  
+      on_finish: function(data){  
+        if(data.match == true){ 
+          data.correct = (data.response != null)  
+        } 
+        if(data.match == false){  
+          data.correct = (data.response === null) 
+        } 
+      } 
+    } 
+
+    var prac_n_back_trials = [ 
+      {match: true},  
+      {match: false}  
+    ] 
+
+
+    var prac_n_back_sequence = { 
+      timeline: [prac_n_back_trial], 
+      timeline_variables: prac_n_back_trials,  
+      sample: { 
+        type: 'with-replacement', 
+        size: prac_sequence_length,  
+        weights: [1, 2] 
+      } 
+    }
+
+
+      var prac_feedback = {  
+      type: 'html-button-response', 
+      stimulus: function(){ 
+        var test_trials = jsPsych.data.get().filter({phase: 'Practice'}).last(prac_sequence_length-1); 
+        var n_match = test_trials.filter({match: true}).count();  
+        var n_nonmatch = test_trials.filter({match: false}).count();  
+        var n_correct = test_trials.filter({match: true, correct: true}).count(); 
+        var false_alarms = test_trials.filter({match: false, correct: false}).count();  
+        var html = "<div style='width:800px;'>"+  
+          "<p>All done!</p>"+ 
+          "<p>You correctly identified "+n_correct+" of the "+n_match+" matching items.</p>"+ 
+          "<p>You incorrectly identified "+false_alarms+" of the "+n_nonmatch+" non-matching items as matches.</p>"+  
+          "<strong>Let's move to the actual test.</strong>"+ 
+          "<p style = 'color:rgb(255,150,100)'>Words might appear anywhere on the screen</p>"
+           
+          
+        return html;  
+      },  
+      choices: ["I'm ready to start!"] 
+    } 
+
+
+
+    timeline.push(prac_n_back_sequence);
+    timeline.push(prac_feedback);  
+
+
+
     /* N Back sequence trials */ 
 
     var min_divWidth = -1000
@@ -459,6 +753,15 @@
       trial_duration: 1500, 
       response_ends_trial: false, 
       post_trial_gap: 500,  
+      extensions: [ 
+          { 
+            type: "webgazer", 
+            params: { 
+              targets: ["#jspsych-html-keyboard-response-stimulus"],  
+            },  
+          },  
+        ],
+     
       data: { 
         phase: 'test',  
         match: jsPsych.timelineVariable('match')  
@@ -490,7 +793,7 @@
     var feedback = {  
       type: 'html-keyboard-response', 
       stimulus: function(){ 
-        var test_trials = jsPsych.data.get().filter({phase: 'test'}).last(sequence_length-2); 
+        var test_trials = jsPsych.data.get().filter({phase: 'test'}).last(sequence_length-1); 
         var n_match = test_trials.filter({match: true}).count();  
         var n_nonmatch = test_trials.filter({match: false}).count();  
         var n_correct = test_trials.filter({match: true, correct: true}).count(); 
@@ -499,7 +802,7 @@
           "<p>All done!</p>"+ 
           "<p>You correctly identified "+n_correct+" of the "+n_match+" matching items.</p>"+ 
           "<p>You incorrectly identified "+false_alarms+" of the "+n_nonmatch+" non-matching items as matches.</p>"+  
-          "<p>Thanks for your time. Please press any key to give feedback"  
+          "<p>Please press any key to proceed"  
           
         return html;  
       },  
@@ -511,21 +814,39 @@
 
       //////////////////////////////////////////////////////////
 
+      var start_tmt = {
+      type:'html-button-response',
+      stimulus:'<div style="width: 800px; padding: 50px; border-radius: 10px ;background-color: #cfffc1">'+'<p style="font-size:20px">Welcome to the Task 3:</p>'+'<h1>Trail-Making Task</h1>',
+      choices: ["Continue"] ,
+    }
+
+    // timeline.push(start_cpt);
+
       var instructions_tmt_1 = {  
       type: 'html-button-response', 
       stimulus: '<div style="width: 800px;">'+  
-        '<p>Please continue to head towards the last test of the experiment i.e. Trail Making Test. </p>'+  
+        '<p>Please continue to head towards the last task of the study </p>'+  
         '</div>', 
       choices: ["Continue"] 
     } 
 
     var instructions_tmt_2 = {  
       type: 'html-button-response', 
-      stimulus: '<div style="width: 800px;">'+  
-        '<p> On the next screen you will see bubbles with a character return in them. Click on the bubbles starting from 1. You need to make the trail pattern 1-A-2-B-3-C-4-D.......</p>'+  
+      stimulus: '<div style="width: 800px;border: thin solid #65dc7f ; border-radius: 10px ;">'+  
+        
+            `
+            <ul>
+            <li style="text-align:left; padding:8px; font-size: 18px">    On the next screen you will see bubbles with a character written in them.</li>
+            <li style="text-align:left; padding:8px; font-size: 18px">Click on the bubbles starting from 1.</li>
+            <li style="text-align:left; padding:8px; font-size: 18px">You need to make the trail pattern 1-A-2-B-3-C-4-D.......</li>
+          
+            </ul>`
+
+          +  
         '</div>', 
       choices: ["Continue"] 
     } 
+
 
 
   var grid_rows = 10;
@@ -665,6 +986,7 @@
   // });
 
   timeline.push(instructions_tmt_1)
+  timeline.push(start_tmt);
   timeline.push(instructions_tmt_2)
   timeline.push(timeline_2)
 
@@ -723,6 +1045,7 @@
     jsPsych.init({  
         //experiment_width: 600,  
         timeline: timeline, 
+        show_progress_bar: true,
         extensions: [{ type: "webgazer" ,params: {round_predictions:false}}], 
         on_interaction_data_update: function(data) {  
           console.log(JSON.stringify(data)) 

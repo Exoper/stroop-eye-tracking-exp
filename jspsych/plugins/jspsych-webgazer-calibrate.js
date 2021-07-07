@@ -12,17 +12,7 @@ jsPsych.plugins["webgazer-calibrate"] = (function () {
     parameters: {
       calibration_points: {
         type: jsPsych.plugins.parameterType.INT,
-        default: [
-          [10, 10],
-          [10, 50],
-          [10, 90],
-          [50, 10],
-          [50, 50],
-          [50, 90],
-          [90, 10],
-          [90, 50],
-          [90, 90],
-        ],
+        default: [[10,10], [10,50], [10,80], [50,10], [50,50], [50,80], [90,10], [90,50], [90,80]],
       },
       calibration_mode: {
         type: jsPsych.plugins.parameterType.STRING,

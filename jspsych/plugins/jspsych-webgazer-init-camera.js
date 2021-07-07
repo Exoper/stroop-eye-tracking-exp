@@ -3,6 +3,8 @@
  * Josh de Leeuw
  **/
 
+
+
 jsPsych.plugins["webgazer-init-camera"] = (function () {
   var plugin = {};
 
@@ -13,10 +15,12 @@ jsPsych.plugins["webgazer-init-camera"] = (function () {
       instructions: {
         type: jsPsych.plugins.parameterType.HTML_STRING,
         default: `
-            <p>Position your head so that the webcam has a good view of your eyes.</p>
-            <p>Center your face in the box and look directly towards the camera.</p>
-            <p>It is important that you try and keep your head reasonably still throughout the experiment, so please take a moment to adjust your setup to be comfortable.</p>
-            <p>When your face is centered in the box and the box is green, you can click to continue.</p>`,
+            <ol>
+            <li style="text-align:left; padding:8px; font-size: 18px">    Position your head so that the webcam has a good view of your eyes.</li>
+            <li style="text-align:left; padding:8px; font-size: 18px">Center your face in the box and look directly towards the camera.</li>
+            <li style="text-align:left; padding:8px; font-size: 18px">It is important that you try and keep your head reasonably still throughout the experiment, so please take a moment to adjust your setup to be comfortable.</li>
+            <li style="text-align:left; padding:8px; font-size: 18px">When your face is centered in the box and the box is green, you can click to continue.</li>
+            </ol>`,
       },
       button_text: {
         type: jsPsych.plugins.parameterType.STRING,
@@ -67,7 +71,7 @@ jsPsych.plugins["webgazer-init-camera"] = (function () {
       );
 
       wg_container.innerHTML = `
-        <div style='position: absolute; top: max(260px, 40%); left: calc(50% - 400px); width:800px;'>
+        <div style='position: absolute; top: max(260px, 40%); left: calc(50% - 400px); width:800px; border: thin solid #0000FF; padding:25px ; border-radius:20px'>
         ${trial.instructions}
         <button id='jspsych-wg-cont' class='jspsych-btn' disabled>${trial.button_text}</button>
         </div>`;
