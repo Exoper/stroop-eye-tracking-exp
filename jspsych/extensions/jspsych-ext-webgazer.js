@@ -46,7 +46,7 @@ jsPsych.extensions["webgazer"] = (function () {
       // NEVER MIND... kalman filter is too useful.
       //state.webgazer.workerScriptURL = 'js/webgazer/ridgeWorker.mjs';
       //state.webgazer.setRegression('threadedRidge');
-      //state.webgazer.applyKalmanFilter(false); // kalman filter doesn't seem to work yet with threadedridge.
+      state.webgazer.applyKalmanFilter(true); // kalman filter doesn't seem to work yet with threadedridge.
 
       // set state parameters
       state.round_predictions = params.round_predictions;
