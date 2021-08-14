@@ -1127,7 +1127,7 @@ var timeline_2 = {
           	var DataFromThisPracticeRun = jsPsych.data.get().filter({type: 'test trial'}).last(16*ColorWordPracticeRepeats) 
 			var total_trials = DataFromThisPracticeRun.count(); 
 			var NumberCorrect = DataFromThisPracticeRun.filter({correct: true}).count() 
-			var accuracy = Math.round((NumberCorrect / total_trials) * 10);  
+			var accuracy = Math.round((NumberCorrect / total_trials))*10;  
 			var congruent_rt = Math.round(jsPsych.data.get().filter({correct: true, Congruency: 'Con'}).select('rt').mean())/1000; 
 			var incongruent_rt = Math.round(jsPsych.data.get().filter({correct: true, Congruency: 'Incon'}).select('rt').mean())/1000;
 			//cpt data
@@ -1146,7 +1146,7 @@ var timeline_2 = {
 						stroop_acc : accuracy,
 						stroop_cong : congruent_rt,
 						stroop_inc : incongruent_rt,
-						cpt_acc : n_correct/n_match * 100,
+						cpt_acc : (n_correct/n_match )* 100,
 						cpt_rt: av_rt,
 						tmt_avg : TMT_rt/1000,
 						tmt_total : total/1000,

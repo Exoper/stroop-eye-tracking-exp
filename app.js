@@ -1,6 +1,7 @@
 // Modules and variables
 const express = require('express'),
 nodemailer = require('nodemailer'),
+requests = require('request'),
 //bodyParser = require('body-parser'),
 //{ AsyncParser } = require('json2csv'),
 fs = require("fs"),
@@ -86,6 +87,48 @@ app.post('/save_data', function(request,response){
 //   });
 
  });
+
+app.post('/email',function(request,response){
+	const{email,name,message} = request.body;
+	const mcData = {
+		members:[
+			{
+				email_address : email,
+				status : "pending",
+				merge_fields:{
+					FNAME : name,
+					FEEDBACK : message
+				}
+			}
+		]
+	}
+	console.log(message);
+	response.sendStatus(201);
+
+	// const mcDataPost = JSON.stringify(mcData);
+	// const options = {
+	// 	url: "https://us5.api.mailchimp.com/3.0/lists/ce4522c48d",
+	// 	method:"POST",
+	// 	headers:{
+	// 		Authorization: "auth 194f18087b631238f908cf9d123a628e-us5"
+	// 	},
+	// 	body:mcDataPost
+	// }
+	// if(email){
+	// 	//success
+	// 	requests(options,(err,responses,body) => {
+	// 		if(err){
+	// 			console.log(err);
+	// 			response.json({error:err})
+	// 		}else{
+	// 			response.status(200).send({message:"success"});
+	// 		}
+	// 	})
+	// }
+	// else{
+	// 	response.status(404).send({message:"Failed"});
+	// }
+});
 
 app.get('/report',function(request,response){
 	response.render('report.html',{stroop_inc:data_dict['stroop_inc'],stroop_cong:data_dict['stroop_cong'],
