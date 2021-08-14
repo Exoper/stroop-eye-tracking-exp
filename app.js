@@ -88,6 +88,11 @@ app.post('/save_data', function(request,response){
 
  });
 
+app.post('/video_data',function(req,res){
+	console.log(req)
+	res.status(200).send({sucesss:true});
+});
+
 app.post('/email',function(request,response){
 	const{email,name,message} = request.body;
 	const mcData = {
@@ -104,10 +109,10 @@ app.post('/email',function(request,response){
 	}
 	const mcDataPost = JSON.stringify(mcData);
 	const options = {
-		url: "https://<DC>.api.mailchimp.com/3.0/lists/<ID>",
+		url: "https://us5.api.mailchimp.com/3.0/lists/ce4522c48d",
 		method:"POST",
 		headers:{
-			Authorization: "auth AUTH_KEY"
+			Authorization: "auth 4d993da69c010cb431626116a8e3b681-us5"
 		},
 		body:mcDataPost
 	}

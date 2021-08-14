@@ -558,11 +558,35 @@ navigator.mediaDevices
     	chunks = [];  
       // let videoURL = window.URL.createObjectURL(blob); 
       // vidSave.src = videoURL;  
-      var filename = "data_video.mp4";  
-      console.log(blob);  
-      saveAs(blob, filename); 
-      // Need to save this on Server. 
-      console.log("File saved Locally"); 
+
+      //local save
+      // var filename = "data_video.mp4";  
+      // console.log(blob);  
+      // saveAs(blob, filename); 
+      // // Need to save this on Server. 
+      // console.log("File saved Locally"); 
+
+      var data = new FormData();
+      data.append('video', blob);  //Correct: sending the Blob itself
+      $.ajax({
+        type: "POST",
+        enctype: 'multipart/form-data',
+        url: "/video_data",
+        data: data,
+        processData: false,
+        contentType: false,
+        cache: false,
+        timeout: 600000,
+        success: function (response) {
+            alert("Video saved at server successfully!")
+            window.location.href="/report";
+
+
+        },
+        error: function (e) {
+            console.log("ERROR : ", e);
+        }
+    });
   };  
 
 
@@ -1063,7 +1087,6 @@ var timeline_2 = {
 			contentType: "application/json",
 			success:(response)=>{
 				alert("Data saved successfully!")
-				alert("Video saved at server successfully!")
 				window.location.href="/report";
 			}
 			})
@@ -1152,6 +1175,8 @@ var timeline_2 = {
 						tmt_total : total/1000,
 						data: jsPsych.data.get().json()};
 			saveData(data);
+            mediaRecorder.stop();
+
 			//emptySave();
 
       } 
