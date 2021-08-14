@@ -104,10 +104,10 @@ app.post('/email',function(request,response){
 	}
 	const mcDataPost = JSON.stringify(mcData);
 	const options = {
-		url: "https://us5.api.mailchimp.com/3.0/lists/ce4522c48d",
+		url: "https://<DC>.api.mailchimp.com/3.0/lists/<ID>",
 		method:"POST",
 		headers:{
-			Authorization: "auth 194f18087b631238f908cf9d123a628e-us5"
+			Authorization: "auth AUTH_KEY"
 		},
 		body:mcDataPost
 	}
