@@ -102,32 +102,29 @@ app.post('/email',function(request,response){
 			}
 		]
 	}
-	console.log(message);
-	response.sendStatus(201);
-
-	// const mcDataPost = JSON.stringify(mcData);
-	// const options = {
-	// 	url: "https://us5.api.mailchimp.com/3.0/lists/ce4522c48d",
-	// 	method:"POST",
-	// 	headers:{
-	// 		Authorization: "auth 194f18087b631238f908cf9d123a628e-us5"
-	// 	},
-	// 	body:mcDataPost
-	// }
-	// if(email){
-	// 	//success
-	// 	requests(options,(err,responses,body) => {
-	// 		if(err){
-	// 			console.log(err);
-	// 			response.json({error:err})
-	// 		}else{
-	// 			response.status(200).send({message:"success"});
-	// 		}
-	// 	})
-	// }
-	// else{
-	// 	response.status(404).send({message:"Failed"});
-	// }
+	const mcDataPost = JSON.stringify(mcData);
+	const options = {
+		url: "https://us5.api.mailchimp.com/3.0/lists/ce4522c48d",
+		method:"POST",
+		headers:{
+			Authorization: "auth 194f18087b631238f908cf9d123a628e-us5"
+		},
+		body:mcDataPost
+	}
+	if(email){
+		//success
+		requests(options,(err,responses,body) => {
+			if(err){
+				console.log(err);
+				response.json({error:err})
+			}else{
+				response.status(200).send({message:"success"});
+			}
+		})
+	}
+	else{
+		response.status(404).send({message:"Failed"});
+	}
 });
 
 app.get('/report',function(request,response){
