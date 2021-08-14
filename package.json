@@ -15,7 +15,8 @@
     "express": "^4.17.1",
     "json-2-csv": "^3.14.1",
     "json2csv": "^5.0.6",
-    "nodemailer": "^6.6.3"
+    "nodemailer": "^6.6.3",
+    "request": "^2.88.2"
   },
   "devDependencies": {
     "nodemon": "^2.0.12",
