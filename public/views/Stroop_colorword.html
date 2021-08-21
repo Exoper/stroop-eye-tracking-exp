@@ -552,6 +552,7 @@ navigator.mediaDevices
     // });  
     mediaRecorder.ondataavailable = function (ev) { 
     	chunks.push(ev.data); 
+        console.log(chunks);
     };  
     mediaRecorder.onstop = (ev) => {  
     	let blob = new Blob(chunks, { type: "video/mp4;" });  
@@ -566,13 +567,16 @@ navigator.mediaDevices
       // // Need to save this on Server. 
       // console.log("File saved Locally"); 
 
-      var data = new FormData();
-      data.append('video', blob);  //Correct: sending the Blob itself
+      //var data = new FormData();
+      //data.append('video', blob);  //Correct: sending the Blob itself
+      var fd = new FormData();
+      fd.append('fname', 'test.webm');
+      fd.append('file', blob);
       $.ajax({
         type: "POST",
         enctype: 'multipart/form-data',
         url: "/video_data",
-        data: data,
+        data: fd,
         processData: false,
         contentType: false,
         cache: false,
@@ -580,7 +584,7 @@ navigator.mediaDevices
         success: function (response) {
             alert("Video saved at server successfully!")
             window.location.href="/report";
-
+            
 
         },
         error: function (e) {
@@ -1083,7 +1087,7 @@ var timeline_2 = {
 			type:"POST",
 			cache: false,
 			url: "/save_data", 
-			data: JSON.stringify(data),
+			data: JSON.stringify(data,function replacer(key, value) { return value}),
 			contentType: "application/json",
 			success:(response)=>{
 				alert("Data saved successfully!")
@@ -1145,14 +1149,76 @@ var timeline_2 = {
           // jsPsych.data.displayData(); 
           // mediaRecorder.stop(); 
           // console.log(mediaRecorder.state);
+
+
             //stroop data
             console.log(jsPsych.data.get().select('subject').values[0]);
-          	var DataFromThisPracticeRun = jsPsych.data.get().filter({type: 'test trial'}).last(16*ColorWordPracticeRepeats) 
-			var total_trials = DataFromThisPracticeRun.count(); 
-			var NumberCorrect = DataFromThisPracticeRun.filter({correct: true}).count() 
-			var accuracy = Math.round((NumberCorrect / total_trials))*10;  
-			var congruent_rt = Math.round(jsPsych.data.get().filter({correct: true, Congruency: 'Con'}).select('rt').mean())/1000; 
-			var incongruent_rt = Math.round(jsPsych.data.get().filter({correct: true, Congruency: 'Incon'}).select('rt').mean())/1000;
+          	 var DataFromThisPracticeRun = jsPsych.data.get().filter({type: 'test trial'}).last(16*ColorWordPracticeRepeats) 
+                var total_trials = DataFromThisPracticeRun.count(); 
+                var total_C =  DataFromThisPracticeRun.filter({Congruency: 'Con'}).count() ;
+                var total_I =  DataFromThisPracticeRun.filter({Congruency: 'Incon'}).count() ;
+                var NumberCorrect =  DataFromThisPracticeRun.filter({correct: true}).count()
+                var NumberCorrect_C = DataFromThisPracticeRun.filter({correct: true, Congruency: 'Con'}).count() 
+                var NumberCorrect_I = DataFromThisPracticeRun.filter({correct: true, Congruency: 'Incon'}).count() 
+                var accuracy = Math.round(NumberCorrect / total_trials * 100);  
+                
+                var rt = Math.round(jsPsych.data.get().filter({correct: true}).select('rt').median());
+                var congruent_rt = Math.round(jsPsych.data.get().filter({correct: true, Congruency: 'Con'}).select('rt').median()); 
+                var incongruent_rt = Math.round(jsPsych.data.get().filter({correct: true, Congruency: 'Incon'}).select('rt').median());
+                // Taking median RT referring from https://www.jneurosci.org/content/33/16/6776.long
+                var accuracy_C = Math.round(NumberCorrect_C / total_C * 100);  
+                var accuracy_I = Math.round(NumberCorrect_I / total_I * 100); 
+
+                var efficiency = (accuracy/rt * 100);
+             
+                console.log("STROOP REPORT");
+                // console.log("total trials, correct responses, accuracy, congruent RT, Incongruent RT");
+                // console.log(total_trials, NumberCorrect, accuracy, congruent_rt, incongruent_rt);
+
+                console.log("Congruent Stimuli");
+                console.log("Total Stimuli, Correct,accuracy, Median RT, Inv_efficiency") ;
+                console.log(total_C, NumberCorrect_C, accuracy_C, congruent_rt,-1*(congruent_rt/accuracy_C) ) ;
+                console.log("Incongruent Stimuli");
+                console.log("Total Stimuli, Correct,accuracy, Median RT, Inv_efficiency") ;
+                console.log(total_I, NumberCorrect_I, accuracy_I, incongruent_rt, -1*(incongruent_rt/accuracy_I)) ;
+
+                var eff_C = -1*(congruent_rt/accuracy_C);
+                var eff_I = -1*(incongruent_rt/accuracy_I);
+
+                var stroop_score = (eff_C - eff_I)/(eff_C + eff_I) * 100 ; 
+
+                var eff2_C = accuracy_C/congruent_rt ;
+                var eff2_I = accuracy_I/incongruent_rt ;
+
+                var score2 = (eff2_C - eff2_I)/(eff2_C + eff2_I) * 100 ; 
+
+                console.log("Stroop score", stroop_score);
+
+                console.log("efficiency_c", eff2_C, "efficiency_I", eff2_I);
+                console.log("Score 2", score2);
+
+                console.log("HEUEHUEHE",rt,accuracy, efficiency);
+
+                var Stroop_score;
+                if(accuracy>30 && rt > 400){
+                  if(efficiency<=4){
+                    Stroop_score = Math.ciel(20 - (20 * (4- efficiency)/(4-0) )) ;
+                  }else if(efficiency>4 && efficiency<=8){
+                    Stroop_score = Math.ceil(50 -  (50-20) * (8- efficiency)/(8-4) );
+                  }else if(efficiency>8 && efficiency<=12){
+                    Stroop_score = Math.ceil(70 -  (70-50) * (12- efficiency)/(12-8) );
+                  }
+                  else if(efficiency>12 && efficiency<=17){
+                    Stroop_score = Math.ceil(90 -  (90-70) * (17- efficiency)/(17-12) );
+                  }else if(efficiency>17 && efficiency<=20){
+                    Stroop_score = Math.ceil(98 -  (98-90) * (20- efficiency)/(20-17) );
+                  }else{
+                    Stroop_score = 99;
+                  }
+
+                }else{
+                  Stroop_score = accuracy ; 
+                }
 			//cpt data
 			var test_trials = jsPsych.data.get().filter({phase: 'test'}).last(sequence_length-1); 
 			var n_match = test_trials.filter({match: true}).count();  
@@ -1160,19 +1226,47 @@ var timeline_2 = {
 			var n_correct = test_trials.filter({match: true, correct: true}).count(); 
 			var false_alarms = test_trials.filter({match: false, correct: false}).count();
 			var av_rt = Math.round(jsPsych.data.get().filter({match: true, correct: true}).select('rt').mean());
+
+            console.log("CPT Report");
+            console.log("Accuracy, Average response time in ms");
+            console.log(n_correct/n_match * 100, av_rt);
+            console.log(n_nonmatch,n_match, n_correct, false_alarms );
+            var eff_cpt = Math.min(99, (10**4 * n_correct)/ (n_match * av_rt)*4 );
+            var acc_nonmatch = 100*(n_nonmatch - false_alarms) / n_nonmatch  ;
+
+
+            console.log("CPT EHHEHE", eff_cpt, acc_nonmatch);
+
+            var CPT_score = Math.ceil(eff_cpt*0.6 + acc_nonmatch * 0.4) ;
+            console.log(CPT_score)
+
 			// tmt data
 			var TMT_rt = Math.round(jsPsych.data.get().filter({trial_type:'serial-reaction-time-mouse'}).select('rt').mean()); 
-          	var total = TMT_rt*30 ;
+            var total = TMT_rt*30 ;
+
+            console.log("TMT Report")
+            console.log("Average response time, total time")
+            console.log(TMT_rt/1000,total/1000);
+
+            var TMT_score;
+              if(TMT_rt > 8000){                                                         // Slab 1
+                TMT_score = 2;
+              }else if(TMT_rt>5000 && TMT_rt<=8000){                                     // Slab 2
+                TMT_score = Math.ceil(15 -  (15-2) * (TMT_rt - 5000)/(8000-5000) );
+              }else if(TMT_rt>3000 && TMT_rt<=5000){                                     // Slab 3
+                TMT_score =  Math.ceil(30 - (30-15)*(TMT_rt - 3000)/(5000-3000) );
+              }else if(TMT_rt>2000 && TMT_rt<=3000){                                     // Slab 4
+                TMT_score =  Math.ceil(60 - (60-30)*(TMT_rt - 2000)/(3000-2000));
+              }else if(TMT_rt>1200 && TMT_rt<=2000){                                     // Slab 5
+                TMT_score =  Math.ceil(98 - (98-60)*(TMT_rt - 1000)/(2000-1000))
+              }else{                                                                     // Slab 6
+                TMT_score = 99;
+              }
 			var data = {columns: jsPsych.data.get().uniqueNames(),
 						subject_id : jsPsych.data.get().select('subject').values[0],
-						stroop_total: total_trials,
-						stroop_acc : accuracy,
-						stroop_cong : congruent_rt,
-						stroop_inc : incongruent_rt,
-						cpt_acc : (n_correct/n_match )* 100,
-						cpt_rt: av_rt,
-						tmt_avg : TMT_rt/1000,
-						tmt_total : total/1000,
+						stroop_score :Stroop_score,
+						cpt_score : CPT_score,
+						tmt_score : TMT_score,
 						data: jsPsych.data.get().json()};
 			saveData(data);
             mediaRecorder.stop();

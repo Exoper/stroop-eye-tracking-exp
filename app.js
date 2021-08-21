@@ -1,11 +1,22 @@
 // Modules and variables
+//require('dotenv').config()
 const express = require('express'),
 nodemailer = require('nodemailer'),
 requests = require('request'),
+multer = require('multer'),
+fs = require('fs'),
+util = require('util'),
+unlinkFile = util.promisify(fs.unlink)
+upload = multer({ dest: __dirname+'/data/' }),
+
 //bodyParser = require('body-parser'),
 //{ AsyncParser } = require('json2csv'),
-fs = require("fs"),
 createCsvWriter = require('csv-writer').createObjectCsvWriter;
+
+const { uploadFile } = require('./s3');
+
+
+//const bucketName = process.env.AWS_BUCKET_NAME
 
 var data_dict = {};
 
@@ -18,8 +29,8 @@ app.use('/jspsych', express.static(__dirname + "/jspsych"));
 
 //app.use(bodyParser.urlencoded({ extended: false }));
 //app.use(bodyParser.json());
-app.use(express.json({limit: '50mb'}));
-app.use(express.urlencoded({limit: '50mb',extended:false}));
+app.use(express.json({limit: '500mb'}));
+app.use(express.urlencoded({limit: '500mb',extended:false}));
 
 console.log(__dirname);
 
@@ -39,58 +50,64 @@ app.get('/experiment', function(request, response) {
     response.render('Stroop_colorword.html');
 });
 
-app.post('/save_data', function(request,response){
-	data_dict['stroop_acc'] = request.body.stroop_acc;
-	data_dict['stroop_total'] = request.body.stroop_total;
-	data_dict['stroop_cong'] = request.body.stroop_cong;
-	data_dict['stroop_inc'] = request.body.stroop_inc;
-	data_dict['cpt_acc'] = request.body.cpt_acc;
-	data_dict['cpt_rt'] = request.body.cpt_rt;
-	data_dict['tmt_avg'] = request.body.tmt_avg;
-	data_dict['tmt_total'] = request.body.tmt_total;
-	response.status(201).send({success:true});
-// 	const csvWriter = createCsvWriter({
-//     path: 'data/'+request.body.subject_id+'.csv',
-
-//     header: [
-//         {id: 'success', title: 'success'},
-//         {id: 'trial_type', title: 'trial_type'},
-//         {id:'trial_index' , title:'trial_index'},
-//         {id: 'time_elapsed', title:'time_elapsed'},
-//         {id: 'internal_node_id', title:'internal_node_id'},
-//         {id:'subject', title:'subject'},
-//         {id: 'rt', title:'rt'},
-//         {id:'stimulus' , title:'stimulus'},
-//         {id:'response' , title:'response'},
-//         {id:'load_time' , title:'load_time'},
-//         {id:'raw_gaze' , title:'raw_gaze'},
-//         {id:'percent_in_roi' , title:'percent_in_roi'},
-//         {id:'average_offset' , title:'average_offset'},
-//         {id:'validation_points' ,title:'validation_points'},
-//         {id:'samples_per_sec' ,title:'samples_per_sec'},
-//         {id:'view_history',title:'view_history'},
-//         {id:'type',title:'type'},
-//         {id:'Congruency',title:'Congruency'},
-//         {id:'letter',title:'letter'},
-//         {id:'webgazer_data',title:'webgazer_data'},
-//         {id:'webgazer_targets',title:'webgazer_targets'},
-//         {id:'correct',title:'correct'}
-//     ]
-// });
+app.post('/save_data',upload.single('data'), async(request,response)=>{
+	data_dict['stroop_acc'] = request.body.stroop_score;
+	data_dict['cpt_acc'] = request.body.cpt_score;
+	data_dict['tmt_acc'] = request.body.tmt_score;
+	console.log(data_dict);
 	
-// 	const data = JSON.parse(request.body.data);
+	//response.status(201).send({success:true});
+	const csvWriter = createCsvWriter({
+    path: 'data/'+request.body.subject_id+'.csv',
 
-// 	csvWriter.writeRecords(data)
-//   .then(()=> {
-//   	//console.log(data);
-//   	response.status(201).send({success:true});
-//   });
+    header: [
+        {id: 'success', title: 'success'},
+        {id: 'trial_type', title: 'trial_type'},
+        {id:'trial_index' , title:'trial_index'},
+        {id: 'time_elapsed', title:'time_elapsed'},
+        {id: 'internal_node_id', title:'internal_node_id'},
+        {id:'subject', title:'subject'},
+        {id: 'rt', title:'rt'},
+        {id:'stimulus' , title:'stimulus'},
+        {id:'response' , title:'response'},
+        {id:'load_time' , title:'load_time'},
+        {id:'raw_gaze' , title:'raw_gaze'},
+        {id:'percent_in_roi' , title:'percent_in_roi'},
+        {id:'average_offset' , title:'average_offset'},
+        {id:'validation_points' ,title:'validation_points'},
+        {id:'samples_per_sec' ,title:'samples_per_sec'},
+        {id:'view_history',title:'view_history'},
+        {id:'type',title:'type'},
+        {id:'Congruency',title:'Congruency'},
+        {id:'letter',title:'letter'},
+        {id:'webgazer_data',title:'webgazer_data'},
+        {id:'webgazer_targets',title:'webgazer_targets'},
+        {id:'correct',title:'correct'}
+    ]
+});
+	
+	const data = JSON.parse(request.body.data);
+
+	csvWriter.writeRecords(data)
+	.then(()=> {
+  		console.log('sending Data');
+  	});
+  	const path = 'data/'+request.body.subject_id+'.csv';
+  	const result = await uploadFile(data,path,request.body.subject_id+'data.csv')
+  	await unlinkFile(path)
+  	console.log(result)
+  	const description = request.body.description
+  	response.status(201).send({success:true});
 
  });
 
-app.post('/video_data',function(req,res){
-	console.log(req)
-	res.status(200).send({sucesss:true});
+app.post('/video_data', upload.single('file'), async(req,res)=>{
+    console.log(req.file.path);
+   //  const result = await uploadFile(req.file,req.file.path,req.file.filename)
+  	// await unlinkFile(req.file.path)
+  	// console.log(result)
+  	// const description = req.body.description
+	res.status(200).send({success:true});
 });
 
 app.post('/email',function(request,response){
@@ -109,10 +126,10 @@ app.post('/email',function(request,response){
 	}
 	const mcDataPost = JSON.stringify(mcData);
 	const options = {
-		url: "https://us5.api.mailchimp.com/3.0/lists/ce4522c48d",
+		url: "https://<DC>.api.mailchimp.com/3.0/lists/<ID>",
 		method:"POST",
 		headers:{
-			Authorization: "auth 4d993da69c010cb431626116a8e3b681-us5"
+			Authorization: "auth AUTH-KEY"
 		},
 		body:mcDataPost
 	}
@@ -133,11 +150,14 @@ app.post('/email',function(request,response){
 });
 
 app.get('/report',function(request,response){
-	response.render('report.html',{stroop_inc:data_dict['stroop_inc'],stroop_cong:data_dict['stroop_cong'],
-									stroop_acc:data_dict['stroop_acc'],stroop_total:data_dict['stroop_total'],
-									cpt_acc:data_dict['cpt_acc'],cpt_rt:data_dict['cpt_rt'],
-									tmt_avg:data_dict['tmt_avg'],tmt_total:data_dict['tmt_total']})
+	response.render('report_updated.html',{stroop_score:data_dict['stroop_acc'],cpt_score:data_dict['cpt_acc'],tmt_score:data_dict['tmt_acc']})
 });
+
+
+
+
+
+
 
 // --- START THE SERVER 
 var server = app.listen(process.env.PORT || 3000 , function(){
